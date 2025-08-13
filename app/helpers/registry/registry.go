@@ -10,7 +10,7 @@ import (
 	"event-reporting/app/services/user"
 )
 
-func Build() *api.Routes {
+func Build() (*api.Routes, *config.Config) {
 	cfg := config.Load()
 	log := logger.New(cfg.AppEnv)
 	defer log.Sync()
@@ -21,6 +21,7 @@ func Build() *api.Routes {
 	}, cfg.AppEnv == "dev")
 	if err != nil { panic(err) }
 
+	// Optional AutoMigrate on boot
 	if cfg.DB.AutoMigrate {
 		if err := connection.Bootstrap(db); err != nil { panic(err) }
 	}
@@ -29,5 +30,5 @@ func Build() *api.Routes {
 	userSvc  := services.NewUserService(userRepo)
 	userH    := handlers.NewUserHandler(userSvc, cfg.JWTSecret)
 
-	return &api.Routes{ User: userH, JWTSecret: cfg.JWTSecret }
+	return &api.Routes{User: userH, JWTSecret: cfg.JWTSecret}, cfg
 }

@@ -2,6 +2,9 @@ package config
 
 import (
 	"log"
+	"os"
+
+	"github.com/joho/godotenv"
 	"github.com/spf13/viper"
 )
 
@@ -19,15 +22,25 @@ type Config struct {
 }
 
 func Load() *Config {
-	viper.SetConfigFile(".env.dev") // or select by APP_ENV
+	// Decide environment (dev by default)
+	env := os.Getenv("APP_ENV")
+	if env == "" { env = "dev" }
+
+	// Load .env.<env> into process env if present (safe to ignore if missing)
+	_ = godotenv.Load(".env." + env)
+
+	// Defaults (in case not set)
+	viper.SetDefault("APP_PORT", "8080")
+	viper.SetDefault("DB_SSLMODE", "disable")
+	viper.SetDefault("DB_AUTOMIGRATE", true)
+
+	// Read from process env
 	viper.AutomaticEnv()
-	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("config: no file read (%v); relying on env only", err)
-	}
-	return &Config{
-		AppName: viper.GetString("APP_NAME"),
-		AppEnv:  viper.GetString("APP_ENV"),
-		AppPort: viper.GetString("APP_PORT"),
+
+	cfg := &Config{
+		AppName:   viper.GetString("APP_NAME"),
+		AppEnv:    env,
+		AppPort:   viper.GetString("APP_PORT"),
 		DB: DB{
 			Host:        viper.GetString("DB_HOST"),
 			Port:        viper.GetString("DB_PORT"),
@@ -39,4 +52,6 @@ func Load() *Config {
 		},
 		JWTSecret: viper.GetString("JWT_SECRET"),
 	}
+	log.Printf("config: loaded %s (.env.%s)", cfg.AppEnv, env)
+	return cfg
 }
