@@ -4,10 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"event-reporting/app/api"
-	database "event-reporting/app/database/pgsql/repository"
-	"event-reporting/app/globals"
-	"event-reporting/app/services/assignedContacts"
-	"event-reporting/app/services/chat"
 	"event-reporting/cmd/setup"
 )
 

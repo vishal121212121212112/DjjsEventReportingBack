@@ -2,21 +2,12 @@ package setup
 
 import (
 	"log"
-	"os"
 	"sync"
 
 	"event-reporting/app/config"
-	controller "event-reporting/app/controller/messages"
-	statusController "event-reporting/app/controller/status"
-	templateQualityController "event-reporting/app/controller/templateQuality"
-	templateStatusController "event-reporting/app/controller/templateStatus"
 
-	mongoClient "event-reporting/app/database/mongo"
 	"event-reporting/app/database/pgsql/connection"
 	"event-reporting/app/helpers/logger"
-	"event-reporting/app/helpers/rabbitmq"
-	redisSetup "event-reporting/app/helpers/redis"
-	"event-reporting/app/repository"
 
 	"github.com/joho/godotenv"
 )
@@ -52,26 +43,7 @@ func AppSetup() *config.Config {
 	return configData
 }
 
-func connectDatabase(wg *sync.WaitGroup) {
-	defer wg.Done() // Signal that this goroutine is done
 
-	// MongoDB connection logic
-	DB_HOST := os.Getenv("MONGO_URI")
-	DATABASE_NAME := os.Getenv("DATABASE_NAME")
-
-	db, connection, err := mongoClient.CreateConnectionWithUri(DB_HOST, DATABASE_NAME)
-	if err != nil {
-		log.Fatalln("Failed to establish MongoDB connection...")
-		log.Fatalln(err)
-		panic(err)
-	}
-
-	manager := repository.MongoManager{
-		Client: connection,
-		Db:     db,
-	}
-	manager.Initialized()
-}
 
 func initPostgres(wg *sync.WaitGroup) {
 	defer wg.Done() // Signal that this goroutine is done

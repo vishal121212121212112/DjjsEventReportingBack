@@ -7,8 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	// middleware "event-reporting/app/helpers/middleware"
-	adminHandler "event-reporting/app/handlers/admin" 
+	middleware "event-reporting/app/helpers/middleware"
 )
 
 type Routers struct {
@@ -16,7 +15,7 @@ type Routers struct {
 }
 
 func (r *Routers) Init() {
-	// r.Router.Use(middleware.CORSMiddleware())
+	r.Router.Use(middleware.CORSMiddleware())
 
 	// Add health check route
 	r.Router.GET("/v1/admin/health", func(c *gin.Context) {
@@ -35,13 +34,12 @@ func (r *Routers) Init() {
 
 
 
-	v1 := r.Router.Group("/admin")
+	// v1 := r.Router.Group("/admin")
 
-	// Initialize Admin Routes
-	adminGroup := adminHandler.AdminGroup{
-		RouterGroup: v1,
-	}
-	adminGroup.Init()
+	// adminGroup := adminHandler.AdminGroup{
+	// 	RouterGroup: v1,
+	// }
+	// adminGroup.Init()
 
 	defer func() {
 		fmt.Println("Router has been initialized..")
