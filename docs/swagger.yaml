@@ -1,0 +1,117 @@
+openapi: 3.0.0
+info:
+  title: DjjsEventReporting
+  version: 1.0.0
+  description: API documentation for the DjjsEventReporting application
+servers:
+  - url: 'https://gateway-dev-api.djjs.com/chat'
+    description: Development server
+  - url: 'http://localhost:8050/admin'
+    description: Local development server
+components: {}
+paths:
+  /eventHistory/post:
+    post:
+      summary: Create a new Event History record
+      description: Add a new Event History to the database.
+      tags:
+        - EventHistory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - fk_program_master_id
+                - fk_branch_id
+                - start_date
+                - end_date
+              properties:
+                fk_program_master_id:
+                  type: integer
+                  description: ID of the program master.
+                fk_branch_id:
+                  type: integer
+                  description: ID of the branch.
+                program_organised_by:
+                  type: string
+                scale:
+                  type: string
+                start_date:
+                  type: string
+                  format: date
+                end_date:
+                  type: string
+                  format: date
+                start_time:
+                  type: string
+                  format: time
+                end_time:
+                  type: string
+                  format: time
+                theme_purpose_message_given:
+                  type: string
+                spiritual_orator:
+                  type: string
+                language:
+                  type: string
+                no_of_beneficiaries:
+                  type: integer
+                no_of_initiation_male:
+                  type: integer
+                no_of_initiation_female:
+                  type: integer
+                no_of_initiation_kids:
+                  type: integer
+                time_duration:
+                  type: string
+                program_venue:
+                  type: string
+                city:
+                  type: string
+                state:
+                  type: string
+                country:
+                  type: string
+                pin_code:
+                  type: string
+                frequency:
+                  type: string
+                procession_route_start:
+                  type: string
+                procession_route_end:
+                  type: string
+                no_of_participants:
+                  type: integer
+                estimated_area_covered_km2:
+                  type: number
+                  format: double
+                is_complete:
+                  type: boolean
+                steps:
+                  type: integer
+                created_by:
+                  type: string
+                updated_by:
+                  type: string
+      responses:
+        '201':
+          description: Event history created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/paths/~1eventHistory~1post/post/requestBody/content/application~1json/schema'
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
+                      created_on:
+                        type: string
+                        format: date-time
+                      updated_on:
+                        type: string
+                        format: date-time
+        '400':
+          description: Invalid input

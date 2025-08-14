@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
+	middleware "event-reporting/app/helpers/middleware"
+
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	middleware "event-reporting/app/helpers/middleware"
 )
 
 type Routers struct {
@@ -34,13 +35,17 @@ func (r *Routers) Init() {
 
 
 
-	// v1 := r.Router.Group("/admin")
+	v1 := r.Router.Group("/admin")
 
 	// adminGroup := adminHandler.AdminGroup{
 	// 	RouterGroup: v1,
 	// }
 	// adminGroup.Init()
-
+	//eventHisotry Group
+	eventHistoryGroup := eventHistoryGroup{
+		RouterGroup: v1,
+	}
+	eventHistoryGroup.Init()
 	defer func() {
 		fmt.Println("Router has been initialized..")
 	}()

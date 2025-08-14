@@ -1,0 +1,21 @@
+post:
+  post:
+    summary: Create a new Event History record
+    description: Add a new Event History to the database.
+    tags:
+      - EventHistory
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: ../schemas/eventHistory.yaml#/NewEventHistory
+    responses:
+      "201":
+        description: Event history created successfully
+        content:
+          application/json:
+            schema:
+              $ref: ../schemas/eventHistory.yaml#/EventResponse
+      "400":
+        description: Invalid input

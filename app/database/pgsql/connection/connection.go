@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"event-reporting/app/models"
 	"fmt"
 	"log"
 	"os"
@@ -10,7 +11,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	// pgmodels "event-reporting/app/pgModels"
 )
 
 var Db *gorm.DB // Global variable to hold DB connection
@@ -59,14 +59,15 @@ func ConnectDatabase() {
 
 	// Run Migrations
 	log.Println("🔄 Running database migrations...")
-	// err = db.AutoMigrate(
-	// 	&pgmodels.AssignedContacts{},
-	// 	&pgmodels.RequestedChats{},
-	// 	&pgmodels.ImportContactReport{},
-	// 	&pgmodels.AgentReport{},
-	// 	&pgmodels.FollowUp{},
-	// 	&pgmodels.FollowUpRemarks{},
-	// )
+	err = db.AutoMigrate(
+		&models.User{},
+		&models.EventHistory{},
+		&models.GuestMaster{},
+		&models.MediaAndDocumentation{},
+		&models.ProgramDonation{},
+		&models.ProgramVolunteer{},
+		&models.ProgramMaster{},
+	)
 	if err != nil {
 		log.Fatal("❌ Failed to migrate models:", err)
 	}
