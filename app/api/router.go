@@ -1,31 +1,49 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 
-	"event-reporting/app/handlers/user"
-	"event-reporting/app/helpers/middleware"
-
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	// middleware "event-reporting/app/helpers/middleware"
+	adminHandler "event-reporting/app/handlers/admin" 
 )
 
-type Routes struct {
-	User      *handlers.UserHandler
-	JWTSecret string
+type Routers struct {
+	Router *gin.Engine
 }
 
-func NewRouter(rt Routes) *gin.Engine {
-	r := gin.New()
-	r.Use(gin.Recovery(), middleware.RequestID(), gin.Logger())
+func (r *Routers) Init() {
+	// r.Router.Use(middleware.CORSMiddleware())
 
-	r.GET("/health", func(c *gin.Context) { c.JSON(http.StatusOK, gin.H{"ok": true}) })
+	// Add health check route
+	r.Router.GET("/v1/admin/health", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "success",
+			"message": "Admin Service is up and running",
+		})
+	})
 
-	api := r.Group("/api")
-	rt.User.RegisterRoutes(api.Group("/users"))
+	r.Router.StaticFile("/admin/swagger.yaml", "./docs/swagger.yaml")
 
-	// example protected group
-	// auth := api.Group("/", middleware.JWT([]byte(rt.JWTSecret)))
-	// auth.GET("/me", ...)
+	r.Router.GET("/admin/swagger/*any", ginSwagger.WrapHandler(
+		swaggerFiles.Handler,
+		ginSwagger.URL("/admin/swagger.yaml"),
+	))
 
-	return r
+
+
+	v1 := r.Router.Group("/admin")
+
+	// Initialize Admin Routes
+	adminGroup := adminHandler.AdminGroup{
+		RouterGroup: v1,
+	}
+	adminGroup.Init()
+
+	defer func() {
+		fmt.Println("Router has been initialized..")
+	}()
 }
