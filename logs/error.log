@@ -1,3 +1,7 @@
 time="2025-08-14T21:24:37+05:30" level=error msg="Error binding JSON: parsing time \"2025-08-14\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"\" as \"T\""
 time="2025-08-14T21:24:38+05:30" level=error msg="Error binding JSON: parsing time \"2025-08-14\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"\" as \"T\""
 time="2025-08-14T21:24:47+05:30" level=error msg="Error binding JSON: parsing time \"2025-08-14\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"\" as \"T\""
+time="2025-08-14T22:40:07+05:30" level=error msg="Error binding JSON: parsing time \"2025-08-14\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"\" as \"T\""
+time="2025-08-14T22:40:12+05:30" level=error msg="Error binding JSON: parsing time \"2025-08-14\" as \"2006-01-02T15:04:05Z07:00\": cannot parse \"\" as \"T\""
+time="2025-08-14T23:00:50+05:30" level=error msg="Error creating full event: failed to create program master: ERROR: invalid input syntax for type bigint: \"8a2d8060-ad6f-430a-b850-2967e1e42744\" (SQLSTATE 22P02)"
+time="2025-08-14T23:01:09+05:30" level=error msg="Error creating full event: failed to create program master: ERROR: invalid input syntax for type bigint: \"51795b62-aeaa-4f10-94e7-cda75cd968b3\" (SQLSTATE 22P02)"

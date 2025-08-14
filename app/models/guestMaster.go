@@ -2,11 +2,13 @@ package models
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type GuestMaster struct {
-	ID                 int       `gorm:"primaryKey;autoIncrement" json:"id"`
-	GuestPrefix        string    `json:"guest_prefix"`    
+	ID                 uuid.UUID    `gorm:"primaryKey" json:"id"`           
+	GuestPrefix        string    `json:"guest_prefix"`
 	GuestFirstName     string    `json:"guest_first_name"`
 	GuestMiddleName    string    `json:"guest_middle_name"`
 	GuestLastName      string    `json:"guest_last_name"`
