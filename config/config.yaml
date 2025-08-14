@@ -1,0 +1,5 @@
+app:
+  name: "Djjs Event Reporting"
+  port: "8050"
+  environment: "development"
+  host: "0.0.0.0"

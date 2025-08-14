@@ -1,0 +1,11 @@
+openapi: 3.0.0
+info:
+  title: DjjsEventReporting
+  version: 1.0.0
+  description: API documentation for the DjjsEventReporting application
+
+servers:
+- url:  https://gateway-dev-api.djjs.com/chat
+  description: Development server
+- url: http://localhost:8086/backend
+  description: Local development server

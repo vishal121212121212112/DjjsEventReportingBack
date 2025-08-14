@@ -1,19 +1,29 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"log"
-
 	"event-reporting/app/api"
-	"event-reporting/app/helpers/registry"
+	"event-reporting/cmd/setup"
 )
 
 func main() {
-	routes, cfg := registry.Build()
-	r := api.NewRouter(*routes)
+	// App setup (configuration, DB, RMQ, etc.)
+	configData := setup.AppSetup()
 
-	addr := ":" + cfg.AppPort
-	log.Printf("listening on %s (env=%s) ...", addr, cfg.AppEnv)
-	if err := r.Run(addr); err != nil {
-		log.Fatal(err)
+	router := gin.Default()
+	router.Static("/files", "./public")
+
+
+	// Initialize all API routes
+	MyRouters := api.Routers{
+		Router: router,
+	}
+	MyRouters.Init()
+
+	// Start HTTP server
+	serverAddress := configData.App.Host + ":" + configData.App.Port
+	if err := router.Run(serverAddress); err != nil {
+		log.Fatal("❌ Unable to start the server:", err)
 	}
 }
