@@ -1,24 +1,31 @@
-# ---- Build stage ----
-FROM golang:1.22 AS builder
+# Start from the official Golang image
+FROM golang:1.21-alpine AS builder
+ 
 WORKDIR /app
-
-# Cache deps
+ 
+# Install git (for go mod) and build tools
+RUN apk add --no-cache git
+ 
+# Copy go mod files and download dependencies
 COPY go.mod go.sum ./
 RUN go mod download
-
-# Copy source
+ 
+# Copy the source code
 COPY . .
-
-# Set GO env for static binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server ./...
-
-# ---- Runtime stage ----
-FROM gcr.io/distroless/base-debian12
+ 
+# Build the Go app
+RUN go build -o djjs-event-reporting-back ./cmd/main.go
+ 
+# Start a minimal runtime image
+FROM alpine:latest
+ 
 WORKDIR /app
-COPY --from=builder /app/server /app/server
-
-# Change port if your app uses a different one
-EXPOSE 8080
-
-# If you need env vars, use: ENV VAR=value
-ENTRYPOINT ["/app/server"]
+ 
+# Copy the built binary from builder
+COPY --from=builder /app/djjs-event-reporting-back .
+ 
+# Expose the port (change if your app uses a different port)
+EXPOSE 8050
+ 
+# Run the binary
+CMD ["./djjs-event-reporting-back"]
