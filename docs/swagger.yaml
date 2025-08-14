@@ -22,20 +22,9 @@ paths:
           application/json:
             schema:
               type: object
-              required:
-                - event_history
-                - guest_masters
-                - media_and_docs
-                - program_donations
-                - program_volunteers
               properties:
                 event_history:
                   type: object
-                  required:
-                    - fk_program_master_id
-                    - fk_branch_id
-                    - start_date
-                    - end_date
                   properties:
                     fk_program_master_id:
                       type: string
@@ -51,6 +40,74 @@ paths:
                       type: string
                       format: date
                       description: End date of the event.
+                    start_time:
+                      type: string
+                      format: time
+                      description: Start time of the event.
+                    end_time:
+                      type: string
+                      format: time
+                      description: End time of the event.
+                    theme_purpose_message_given:
+                      type: string
+                      description: Theme and purpose message for the event.
+                    is_complete:
+                      type: boolean
+                      description: Whether the event is completed.
+                    steps:
+                      type: integer
+                      description: Number of steps involved in the event.
+                    spiritual_orator:
+                      type: string
+                      description: Spiritual orator of the event.
+                    language:
+                      type: string
+                      description: Language used in the event.
+                    no_of_beneficiaries:
+                      type: integer
+                      description: Number of beneficiaries.
+                    no_of_initiation_male:
+                      type: integer
+                      description: Number of male initiations.
+                    no_of_initiation_female:
+                      type: integer
+                      description: Number of female initiations.
+                    no_of_initiation_kids:
+                      type: integer
+                      description: Number of kids initiation.
+                    time_duration:
+                      type: string
+                      description: Duration of the event.
+                    program_venue:
+                      type: string
+                      description: Venue of the event.
+                    city:
+                      type: string
+                      description: City where the event is held.
+                    state:
+                      type: string
+                      description: State where the event is held.
+                    country:
+                      type: string
+                      description: Country where the event is held.
+                    pin_code:
+                      type: string
+                      description: PIN code of the venue.
+                    frequency:
+                      type: string
+                      description: Frequency of the event.
+                    procession_route_start:
+                      type: string
+                      description: Start of the procession route.
+                    procession_route_end:
+                      type: string
+                      description: End of the procession route.
+                    no_of_participants:
+                      type: integer
+                      description: Number of participants.
+                    estimated_area_covered_km2:
+                      type: number
+                      description: Area covered in square kilometers.
                 guest_masters:
                   type: object
                   properties:
@@ -63,41 +120,38 @@ paths:
                     contact_number:
                       type: string
                       description: Contact number of the guest.
-                media_and_docs:
-                  type: object
-                  required:
-                    - file_type
-                    - file_url
-                  properties:
-                    file_type:
-                      type: string
-                      description: 'Type of the media or document (e.g., image, video, document).'
-                    file_url:
-                      type: string
-                      description: URL of the media or document.
                 program_donations:
                   type: object
-                  required:
-                    - donation_id
-                    - amount
-                    - donor_name
                   properties:
                     donation_id:
                       type: integer
                       description: ID of the donation.
-                    amount:
-                      type: number
-                      format: float
-                      description: Amount donated.
-                    donor_name:
-                      type: string
-                      description: Name of the donor.
+                      amount:
+                        type: number
+                        format: float
+                        description: Amount donated.
+                      donor_name:
+                        type: string
+                        description: Name of the donor.
+                      fk_program_id:
+                        type: string
+                        description: ID of the related program.
+                      fk_branch_id:
+                        type: string
+                        description: ID of the related branch.
+                      donation_type:
+                        type: string
+                        description: 'Type of donation (e.g., monetary, material).'
+                      total_amount:
+                        type: number
+                        format: float
+                        description: Total amount donated (for monetary donations).
+                      estimated_material_value:
+                        type: number
+                        format: float
+                        description: Estimated value of material donations.
                 program_volunteers:
                   type: object
-                  required:
-                    - volunteer_id
-                    - volunteer_name
-                    - hours_volunteered
                   properties:
                     volunteer_id:
                       type: integer
@@ -109,6 +163,42 @@ paths:
                       type: number
                       format: float
                       description: Total hours volunteered.
+                    fk_program_id:
+                      type: string
+                      description: ID of the related program.
+                    fk_branch_id:
+                      type: string
+                      description: ID of the related branch.
+                    member_id:
+                      type: string
+                      description: ID of the member who is volunteering.
+                    gender:
+                      type: string
+                      description: Gender of the volunteer.
+                    volunteer_branch_name:
+                      type: string
+                      description: Name of the volunteer's branch.
+                    contact_number:
+                      type: string
+                      description: Contact number of the volunteer.
+                    no_of_days_involved_in_sewa:
+                      type: string
+                      description: Number of days involved in sewa.
+                    permanent_sewa:
+                      type: string
+                      description: Whether the volunteer is permanently engaged in sewa.
+                    sewa_department:
+                      type: string
+                      description: Department in which the volunteer serves.
+                program_masters:
+                  type: object
+                  properties:
+                    program_type:
+                      type: string
+                      description: 'Type of the program (e.g., seminar, workshop, etc.).'
+                    program_name:
+                      type: string
+                      description: 'Name of the program (e.g., "Yoga Workshop", "Tech Conference").'
       responses:
         '201':
           description: Event history created successfully
