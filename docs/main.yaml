@@ -5,7 +5,7 @@ info:
   description: API documentation for the DjjsEventReporting application
 
 servers:
-  - url: https://gateway-dev-api.djjs.com/chat
+  - url: https://gateway-dev-api.djjs.com/admin
     description: Development server
   - url: http://localhost:8050/admin
     description: Local development server
@@ -18,7 +18,7 @@ components:
       bearerFormat: JWT
 paths:
   /eventHistory/post:
-    $ref: "./paths/eventHistory.yaml#/post"
+    $ref: "./paths/eventHistory.yaml"
   /users/create:
     $ref: ./paths/user.yaml
   /users/login:
