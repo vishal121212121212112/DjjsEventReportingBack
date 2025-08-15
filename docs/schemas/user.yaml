@@ -1,0 +1,56 @@
+NewUser:
+  type: object
+  required:
+    - username
+    - email
+    - password
+    - type
+  properties:
+    username:
+      type: string
+      description: Username of the user.
+    email:
+      type: string
+      description: Email address of the user.
+    password:
+      type: string
+      description: Password for the user.
+    type:
+      type: string
+      description: User type (Admin, BranchCoordinator, BranchAssistant).
+    branchId:
+      type: string
+      description: UUID of the associated branch (required for branch users).
+    contactNumber:
+      type: string
+      description: Contact number of the user.
+
+UserResponse:
+  type: object
+  properties:
+    id:
+      type: string
+      description: Unique identifier for the user (UUID).
+    username:
+      type: string
+      description: Username of the user.
+    email:
+      type: string
+      description: Email address of the user.
+    type:
+      type: string
+      description: User type (Admin, BranchCoordinator, BranchAssistant).
+    branchId:
+      type: string
+      description: UUID of the associated branch (for branch users).
+    contactNumber:
+      type: string
+      description: Contact number of the user.
+    createdOn:
+      type: string
+      format: date-time
+      description: Timestamp when the user was created.
+    updatedOn:
+      type: string
+      format: date-time
+      description: Timestamp when the

@@ -33,19 +33,19 @@ func (r *Routers) Init() {
 		ginSwagger.URL("/admin/swagger.yaml"),
 	))
 
-
-
 	v1 := r.Router.Group("/admin")
 
-	// adminGroup := adminHandler.AdminGroup{
-	// 	RouterGroup: v1,
-	// }
-	// adminGroup.Init()
-	//eventHisotry Group
+	userGroup := userGroup{
+		RouterGroup: v1,
+	}
 	eventHistoryGroup := eventHistoryGroup{
 		RouterGroup: v1,
 	}
+
+	// initalise the routes here
+	userGroup.Init()
 	eventHistoryGroup.Init()
+
 	defer func() {
 		fmt.Println("Router has been initialized..")
 	}()
