@@ -18,22 +18,20 @@ type JWTClaims struct {
 }
 
 func NewJWTService() (*JWTService, error) {
-	secretKey := os.Getenv("TOKEN_SECRET_KEY")
+	secretKey := os.Getenv("JWT_SECRET") // <-- use JWT_SECRET
 	if secretKey == "" {
-		return nil, errors.New("TOKEN_SECRET_KEY is not set in environment variables")
+		return nil, errors.New("JWT_SECRET is not set in environment variables")
 	}
 	return &JWTService{secretKey: secretKey}, nil
 }
 
-func (service *JWTService) GenerateToken(userID string) (string, error) {
+func (service *JWTService) GenerateToken(userID, userType string, userEmail string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
-	claims := &JWTClaims{
-		Data: userID,
-		RegisteredClaims: jwt.RegisteredClaims{
-			ID:        userID,
-			ExpiresAt: jwt.NewNumericDate(expirationTime),
-			IssuedAt:  jwt.NewNumericDate(time.Now()),
-		},
+	claims := jwt.MapClaims{
+		"user_id": userID,
+		"type":    userType,
+		"email":   userEmail,
+		"exp":     expirationTime.Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(service.secretKey))

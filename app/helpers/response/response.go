@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/gin"
 	common "event-reporting/app/utils/common/src"
 	constants "event-reporting/app/utils/constants"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SendSuccessResponse[T any](c *gin.Context, data T) {

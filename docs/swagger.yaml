@@ -1,0 +1,368 @@
+openapi: 3.0.0
+info:
+  title: DjjsEventReporting
+  version: 1.0.0
+  description: API documentation for the DjjsEventReporting application
+servers:
+  - url: 'https://gateway-dev-api.djjs.com/chat'
+    description: Development server
+  - url: 'http://localhost:8050/admin'
+    description: Local development server
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /eventHistory/post:
+    summary: Create a new Event History record
+    description: Add a new Event History to the database.
+    security:
+      - BearerAuth: []
+    tags:
+      - EventHistory
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              event_history:
+                type: object
+                properties:
+                  fk_program_master_id:
+                    type: string
+                    description: ID of the program master.
+                  fk_branch_id:
+                    type: string
+                    description: ID of the branch.
+                  start_date:
+                    type: string
+                    format: date
+                    description: Start date of the event.
+                  end_date:
+                    type: string
+                    format: date
+                    description: End date of the event.
+                  start_time:
+                    type: string
+                    format: time
+                    description: Start time of the event.
+                  end_time:
+                    type: string
+                    format: time
+                    description: End time of the event.
+                  theme_purpose_message_given:
+                    type: string
+                    description: Theme and purpose message for the event.
+                  is_complete:
+                    type: boolean
+                    description: Whether the event is completed.
+                  steps:
+                    type: integer
+                    description: Number of steps involved in the event.
+                  spiritual_orator:
+                    type: string
+                    description: Spiritual orator of the event.
+                  language:
+                    type: string
+                    description: Language used in the event.
+                  no_of_beneficiaries:
+                    type: integer
+                    description: Number of beneficiaries.
+                  no_of_initiation_male:
+                    type: integer
+                    description: Number of male initiations.
+                  no_of_initiation_female:
+                    type: integer
+                    description: Number of female initiations.
+                  no_of_initiation_kids:
+                    type: integer
+                    description: Number of kids initiation.
+                  time_duration:
+                    type: string
+                    description: Duration of the event.
+                  program_venue:
+                    type: string
+                    description: Venue of the event.
+                  city:
+                    type: string
+                    description: City where the event is held.
+                  state:
+                    type: string
+                    description: State where the event is held.
+                  country:
+                    type: string
+                    description: Country where the event is held.
+                  pin_code:
+                    type: string
+                    description: PIN code of the venue.
+                  frequency:
+                    type: string
+                    description: Frequency of the event.
+                  procession_route_start:
+                    type: string
+                    description: Start of the procession route.
+                  procession_route_end:
+                    type: string
+                    description: End of the procession route.
+                  no_of_participants:
+                    type: integer
+                    description: Number of participants.
+                  estimated_area_covered_km2:
+                    type: number
+                    description: Area covered in square kilometers.
+              guest_masters:
+                type: object
+                properties:
+                  guest_id:
+                    type: string
+                    description: ID of the guest.
+                  name:
+                    type: string
+                    description: Name of the guest.
+                  contact_number:
+                    type: string
+                    description: Contact number of the guest.
+              media_and_docs:
+                type: object
+                properties:
+                  fk_program_id: null
+                  type: string
+                  description: ID of the related program.
+                  file_url:
+                    type: string
+                    description: URL of the media or document (required).
+                  file_name:
+                    type: string
+                    description: Name of the media or document (required).
+                  file_size:
+                    type: integer
+                    description: Size of the file in bytes (optional).
+                  content_type:
+                    type: string
+                    description: MIME content type of the file (optional).
+              program_donations:
+                type: object
+                properties:
+                  donation_id:
+                    type: integer
+                    description: ID of the donation.
+                    amount:
+                      type: number
+                      format: float
+                      description: Amount donated.
+                    donor_name:
+                      type: string
+                      description: Name of the donor.
+                    fk_program_id:
+                      type: string
+                      description: ID of the related program.
+                    fk_branch_id:
+                      type: string
+                      description: ID of the related branch.
+                    donation_type:
+                      type: string
+                      description: 'Type of donation (e.g., monetary, material).'
+                    total_amount:
+                      type: number
+                      format: float
+                      description: Total amount donated (for monetary donations).
+                    estimated_material_value:
+                      type: number
+                      format: float
+                      description: Estimated value of material donations.
+              program_volunteers:
+                type: object
+                properties:
+                  volunteer_id:
+                    type: integer
+                    description: ID of the volunteer.
+                  volunteer_name:
+                    type: string
+                    description: Name of the volunteer.
+                  hours_volunteered:
+                    type: number
+                    format: float
+                    description: Total hours volunteered.
+                  fk_program_id:
+                    type: string
+                    description: ID of the related program.
+                  fk_branch_id:
+                    type: string
+                    description: ID of the related branch.
+                  member_id:
+                    type: string
+                    description: ID of the member who is volunteering.
+                  gender:
+                    type: string
+                    description: Gender of the volunteer.
+                  volunteer_branch_name:
+                    type: string
+                    description: Name of the volunteer's branch.
+                  contact_number:
+                    type: string
+                    description: Contact number of the volunteer.
+                  no_of_days_involved_in_sewa:
+                    type: string
+                    description: Number of days involved in sewa.
+                  permanent_sewa:
+                    type: string
+                    description: Whether the volunteer is permanently engaged in sewa.
+                  sewa_department:
+                    type: string
+                    description: Department in which the volunteer serves.
+              program_masters:
+                type: object
+                properties:
+                  program_type:
+                    type: string
+                    description: 'Type of the program (e.g., seminar, workshop, etc.).'
+                  program_name:
+                    type: string
+                    description: 'Name of the program (e.g., "Yoga Workshop", "Tech Conference").'
+    responses:
+      '201':
+        description: Event history created successfully
+        content:
+          application/json:
+            schema:
+              allOf:
+                - $ref: '#/paths/~1eventHistory~1post/requestBody/content/application~1json/schema'
+                - type: object
+                  properties:
+                    id:
+                      type: integer
+                    created_on:
+                      type: string
+                      format: date-time
+                    updated_on:
+                      type: string
+                      format: date-time
+      '400':
+        description: Invalid input
+      '401':
+        description: Unauthorized
+  /users/create:
+    post:
+      summary: Create a new user
+      description: Add a new user to the database. Admins can create Branch Coordinators and Branch Assistants. Branch Coordinators can create Branch Assistants.
+      security:
+        - BearerAuth: []
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+                - type
+              properties:
+                username:
+                  type: string
+                  description: Username of the user.
+                email:
+                  type: string
+                  description: Email address of the user.
+                password:
+                  type: string
+                  description: Password for the user.
+                type:
+                  type: string
+                  description: 'User type (Admin, BranchCoordinator, BranchAssistant).'
+                branchId:
+                  type: string
+                  description: UUID of the associated branch (required for branch users).
+                contactNumber:
+                  type: string
+                  description: Contact number of the user.
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique identifier for the user (UUID).
+                  username:
+                    type: string
+                    description: Username of the user.
+                  email:
+                    type: string
+                    description: Email address of the user.
+                  type:
+                    type: string
+                    description: 'User type (Admin, BranchCoordinator, BranchAssistant).'
+                  branchId:
+                    type: string
+                    description: UUID of the associated branch (for branch users).
+                  contactNumber:
+                    type: string
+                    description: Contact number of the user.
+                  createdOn:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was created.
+                  updatedOn:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+  /users/login:
+    post:
+      summary: Login and get JWT token
+      description: Authenticate user and receive a JWT token for protected endpoints.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  description: User email address.
+                password:
+                  type: string
+                  description: User password.
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token for authentication.
+                  userId:
+                    type: string
+                    description: User ID.
+                  type:
+                    type: string
+                    description: User type.
+        '401':
+          description: Invalid credentials
