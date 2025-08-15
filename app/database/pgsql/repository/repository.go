@@ -1,10 +1,11 @@
 package database
 
 import (
+	connection "event-reporting/app/database/pgsql/connection"
 	"fmt"
 	"time"
+
 	"gorm.io/gorm"
-	connection "event-reporting/app/database/pgsql/connection"
 )
 
 type Repository struct {
@@ -63,24 +64,24 @@ func (r *Repository) Count(model interface{}, conditions map[string]interface{})
 	return count, nil
 }
 func (r *Repository) CountBetween(model interface{}, conditions map[string]interface{}, column string, start, end time.Time) (int64, error) {
-    db := connection.Db.Model(model)
+	db := connection.Db.Model(model)
 
-    for k, v := range conditions {
-        switch vv := v.(type) {
-        case []string:
-            db = db.Where(fmt.Sprintf("%s IN ?", k), vv)
-        default:
-            db = db.Where(fmt.Sprintf("%s = ?", k), v)
-        }
-    }
+	for k, v := range conditions {
+		switch vv := v.(type) {
+		case []string:
+			db = db.Where(fmt.Sprintf("%s IN ?", k), vv)
+		default:
+			db = db.Where(fmt.Sprintf("%s = ?", k), v)
+		}
+	}
 
-    db = db.Where(fmt.Sprintf("%s >= ? AND %s < ?", column, column), start, end)
+	db = db.Where(fmt.Sprintf("%s >= ? AND %s < ?", column, column), start, end)
 
-    var count int64
-    if err := db.Count(&count).Error; err != nil {
-        return 0, err
-    }
-    return count, nil
+	var count int64
+	if err := db.Count(&count).Error; err != nil {
+		return 0, err
+	}
+	return count, nil
 }
 
 func (r *Repository) FindAll(model interface{}, conditions map[string]interface{}, limit, offset int) error {

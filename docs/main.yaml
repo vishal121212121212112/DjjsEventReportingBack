@@ -10,8 +10,19 @@ servers:
   - url: http://localhost:8050/admin
     description: Local development server
 
-components: {}
-
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
 paths:
   /eventHistory/post:
     $ref: "./paths/eventHistory.yaml#/post"
+  /users/create:
+    $ref: ./paths/user.yaml
+  /users/login:
+    $ref: ./paths/login.yaml
+
+
+

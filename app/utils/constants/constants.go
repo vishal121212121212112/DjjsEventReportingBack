@@ -11,6 +11,7 @@ const (
 	ResponseUnauthorized    ResponseType = "UNAUTHORIZED"
 	ResponseTooManyRequests ResponseType = "TOO_MANY_REQUESTS"
 )
+
 type Status string
 
 const (
@@ -23,4 +24,11 @@ const (
 const (
 	True  string = "true"
 	False string = "false"
+)
+
+const (
+	UserTypeAdmin             string = "hoadmin"
+	UserTypeBranchAssitant    string = "branch_assistant"
+	UserTypeBranchCoordinator string = "branch_coordinator"
+	UserTypeITAssistant       string = "it_assistant"
 )
