@@ -2,12 +2,14 @@ package models
 
 import (
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type EventHistory struct {
-	ID                       int       `json:"id"`
-	FKProgramMasterID        int       `json:"fk_program_master_id"`
-	FKBranchID               int       `json:"fk_branch_id"`
+	ID                       uuid.UUID `json:"id"`
+	FKProgramMasterID        string    `json:"fk_program_master_id"`
+	FKBranchID               string    `json:"fk_branch_id"`
 	ProgramOrganisedBy       string    `json:"program_organised_by"`
 	Scale                    string    `json:"scale"`
 	StartDate                time.Time `json:"start_date"`
@@ -15,8 +17,8 @@ type EventHistory struct {
 	StartTime                time.Time `json:"start_time"`
 	EndTime                  time.Time `json:"end_time"`
 	ThemePurposeMessageGiven string    `json:"theme_purpose_message_given"`
-	IsComplete               bool      `json:"is_complete"` 
-	Steps                    int       `json:"steps"` 
+	IsComplete               bool      `json:"is_complete"`
+	Steps                    int       `json:"steps"`
 	SpiritualOrator          string    `json:"spiritual_orator"`
 	Language                 string    `json:"language"`
 	NoOfBeneficiaries        int       `json:"no_of_beneficiaries"`
@@ -38,6 +40,15 @@ type EventHistory struct {
 	UpdatedOn                time.Time `json:"updated_on"`
 	CreatedBy                string    `json:"created_by"`
 	UpdatedBy                string    `json:"updated_by"`
+}
+
+type CreateFullEventRequest struct {
+	EventHistory      EventHistory          `json:"event_history"`
+	GuestMasters      GuestMaster           `json:"guest_masters"`
+	MediaAndDocs      MediaAndDocumentation `json:"media_and_docs"`
+	ProgramDonations  ProgramDonation       `json:"program_donations"`
+	ProgramVolunteers ProgramVolunteer      `json:"program_volunteers"`
+	ProgramMasters     ProgramMaster         `json:"program_volunteers"`
 }
 
 func (EventHistory) TableName() string { return "EventHistory" }

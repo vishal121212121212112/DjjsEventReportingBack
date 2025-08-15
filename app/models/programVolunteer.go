@@ -1,17 +1,21 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type ProgramVolunteer struct {
-	ID                     int       `json:"id"`                     
-	FKProgramID            int       `json:"fk_program_id"`               
-	FKBranchID             int       `json:"fk_branch_id"`              
-	MemberID               int       `json:"member_id"`                   
+	ID                     uuid.UUID       `json:"id"`                     
+	FKProgramID            string       `json:"fk_program_id"`               
+	FKBranchID             string       `json:"fk_branch_id"`              
+	MemberID               string       `json:"member_id"`                   
 	VolunteerName          string    `json:"volunteer_name"`             
 	Gender                 string    `json:"gender"`                      
 	VolunteerBranchName    string    `json:"volunteer_branch_name"`      
 	ContactNumber          string    `json:"contact_number"`             
-	NoOfDaysInvolvedInSewa int       `json:"no_of_days_involved_in_sewa"` 
+	NoOfDaysInvolvedInSewa string       `json:"no_of_days_involved_in_sewa"` 
 	PermanentSewa          string    `json:"permanent_sewa"`              
 	SewaDepartment         string    `json:"sewa_department"`           
 	CreatedOn              time.Time `json:"created_on"`             

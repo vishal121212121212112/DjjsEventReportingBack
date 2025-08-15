@@ -1,11 +1,15 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type ProgramDonation struct {
-	ID                     int       `gorm:"primaryKey" json:"id"`
-	FKProgramID            int       `gorm:"foreignKey" json:"fk_program_id"`
-	FKBranchID             int       `gorm:"foreignKey" json:"fk_branch_id"`
+	ID                     uuid.UUID `gorm:"primaryKey" json:"id"`
+	FKProgramID            string    `gorm:"foreignKey" json:"fk_program_id"`
+	FKBranchID             string    `gorm:"foreignKey" json:"fk_branch_id"`
 	DonationType           string    `gorm:"type:varchar(255)" json:"donation_type"`
 	TotalAmount            float64   `gorm:"type:decimal(10,2)" json:"total_amount"`
 	Description            string    `gorm:"type:text" json:"description"`
