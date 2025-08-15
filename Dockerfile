@@ -1,31 +1,40 @@
 # Start from the official Golang image
-FROM golang:1.21-alpine AS builder
+FROM golang:1.20-alpine AS builder
 
-WORKDIR /app
-
-# Install git (for go mod) and build tools
+# Install git and other dependencies
 RUN apk add --no-cache git
 
-# Copy go mod files and download dependencies
+# Set working directory
+WORKDIR /app
+
+# Copy go.mod and go.sum files
 COPY go.mod go.sum ./
 RUN go mod download
 
 # Copy the source code
 COPY . .
 
-# Build the Go app
-RUN go build -o djjs-event-reporting-back ./cmd/main.go
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/main/main.go
 
-# Start a minimal runtime image
+# Final stage
 FROM alpine:latest
 
-WORKDIR /app
+RUN apk --no-cache add ca-certificates tzdata
 
-# Copy the built binary from builder
-COPY --from=builder /app/djjs-event-reporting-back .
+WORKDIR /root/
 
-# Expose the port (change if your app uses a different port)
-EXPOSE 8050
+# Copy the binary from builder
+COPY --from=builder /app/main .
+# Copy configuration files
+COPY --from=builder /app/.env.dev ./.env.dev
+COPY --from=builder /app/docs ./docs
 
-# Run the binary
-CMD ["./djjs-event-reporting-back"]
+# Expose port
+EXPOSE 8080
+
+# Set environment variables
+ENV GIN_MODE=release
+
+# Command to run
+CMD ["./main"]
