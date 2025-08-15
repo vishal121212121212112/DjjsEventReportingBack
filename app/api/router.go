@@ -41,10 +41,14 @@ func (r *Routers) Init() {
 	eventHistoryGroup := eventHistoryGroup{
 		RouterGroup: v1,
 	}
+	branchGroup := branchGroup{
+		RouterGroup: v1,
+	}
 
-	// initalise the routes here
+	// initialize the routes here
 	userGroup.Init()
 	eventHistoryGroup.Init()
+	branchGroup.Init()
 
 	defer func() {
 		fmt.Println("Router has been initialized..")

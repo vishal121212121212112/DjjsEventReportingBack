@@ -17,6 +17,6 @@ func (r *userGroup) Init() {
 		fmt.Println("users api has been intillized")
 	}()
 
-	r.RouterGroup.POST("/users/create", middleware.JWT(), userHandler.CreateUserHandler)
+	r.RouterGroup.POST("/users", middleware.JWT(), userHandler.CreateUserHandler)
 	r.RouterGroup.POST("/users/login", userHandler.LoginHandler)
 }

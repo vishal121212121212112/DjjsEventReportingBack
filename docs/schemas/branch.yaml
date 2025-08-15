@@ -1,0 +1,249 @@
+BranchSearchRequest:
+  type: object
+  properties:
+    branch_id:
+      type: integer
+      format: int64
+      description: Branch ID to filter by
+      example: 123
+    
+    branch_name:
+      type: string
+      description: Branch name (supports partial match)
+      example: "Mumbai Central"
+    
+    state_id:
+      type: integer
+      format: int64
+      description: State ID to filter by
+      example: 1
+    
+    district_id:
+      type: integer
+      format: int64
+      description: District ID to filter by
+      example: 5
+    
+    country_id:
+      type: integer
+      format: int64
+      description: Country ID to filter by
+      example: 1
+    
+    city:
+      type: string
+      description: City name (supports partial match)
+      example: "Mumbai"
+    
+    established_from:
+      type: string
+      format: date
+      description: Branch established from date
+      example: "2020-01-01"
+    
+    established_to:
+      type: string
+      format: date
+      description: Branch established to date
+      example: "2023-12-31"
+    
+    created_from:
+      type: string
+      format: date
+      description: Branch created from date
+      example: "2020-01-01"
+    
+    created_to:
+      type: string
+      format: date
+      description: Branch created to date
+      example: "2023-12-31"
+    
+    updated_from:
+      type: string
+      format: date
+      description: Branch updated from date
+      example: "2020-01-01"
+    
+    updated_to:
+      type: string
+      format: date
+      description: Branch updated to date
+      example: "2023-12-31"
+    
+    infrastructure_type:
+      type: string
+      description: Infrastructure type
+      example: "School"
+    
+    sewadar_role:
+      type: string
+      description: Sewadar role
+      example: "Teacher"
+    
+    sewadar_gender:
+      type: string
+      description: Sewadar gender
+      example: "Male"
+    
+    min_total_sewadars:
+      type: integer
+      description: Minimum total sewadars count
+      example: 5
+    
+    max_total_sewadars:
+      type: integer
+      description: Maximum total sewadars count
+      example: 50
+    
+    min_total_infrastructure:
+      type: integer
+      description: Minimum total infrastructure count
+      example: 2
+    
+    max_total_infrastructure:
+      type: integer
+      description: Maximum total infrastructure count
+      example: 10
+    
+    sort_by:
+      type: string
+      description: Field to sort by
+      enum: [branch_branch_id, branch_branch_name, branch_city, branch_established_date, branch_created_on, branch_updated_on, state_state_name, district_district_name]
+      default: branch_branch_id
+    
+    sort_dir:
+      type: string
+      description: Sort direction
+      enum: [ASC, DESC]
+      default: ASC
+    
+    limit:
+      type: integer
+      description: Number of results to return
+      minimum: 1
+      maximum: 100
+      default: 50
+    
+    offset:
+      type: integer
+      description: Number of results to skip
+      minimum: 0
+      default: 0
+
+BranchSearchResponse:
+  type: object
+  properties:
+    status:
+      type: string
+      example: "success"
+    
+    data:
+      type: object
+      properties:
+        branches:
+          type: array
+          items:
+            $ref: '#/BranchResult'
+        
+        total:
+          type: integer
+          description: Total number of branches returned
+          example: 25
+
+BranchResult:
+  type: object
+  properties:
+    branch_branch_id:
+      type: integer
+      format: int64
+      description: Branch ID
+      example: 123
+    
+    branch_branch_name:
+      type: string
+      description: Branch name
+      example: "Mumbai Central Branch"
+    
+    branch_state_id:
+      type: integer
+      format: int64
+      description: State ID
+      example: 1
+    
+    branch_district_id:
+      type: integer
+      format: int64
+      description: District ID
+      example: 5
+    
+    branch_country_id:
+      type: integer
+      format: int64
+      description: Country ID
+      example: 1
+    
+    branch_city:
+      type: string
+      description: City name
+      example: "Mumbai"
+    
+    branch_established_date:
+      type: string
+      format: date
+      description: Branch established date
+      example: "2020-06-15"
+    
+    branch_created_on:
+      type: string
+      format: date-time
+      description: Branch created timestamp
+      example: "2020-06-15T10:30:00Z"
+    
+    branch_updated_on:
+      type: string
+      format: date-time
+      description: Branch updated timestamp
+      example: "2023-12-01T14:45:00Z"
+    
+    state_state_name:
+      type: string
+      description: State name
+      example: "Maharashtra"
+    
+    district_district_name:
+      type: string
+      description: District name
+      example: "Mumbai"
+    
+    infrastructure_infrastructure_type:
+      type: string
+      description: Infrastructure type
+      example: "School"
+    
+    sewa_sewadar_name:
+      type: string
+      description: Sewadar name
+      example: "John Doe"
+    
+    sewa_sewadar_role:
+      type: string
+      description: Sewadar role
+      example: "Teacher"
+    
+    sewa_sewadar_gender:
+      type: string
+      description: Sewadar gender
+      example: "Male"
+    
+    total_sewadar_count:
+      type: integer
+      format: int64
+      description: Total number of sewadars
+      example: 25
+    
+    total_infrastructure_count:
+      type: integer
+      format: int64
+      description: Total number of infrastructure items
+      example: 5

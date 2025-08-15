@@ -8,6 +8,7 @@ import (
 	"event-reporting/app/utils/jwt"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -52,13 +53,14 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	var user models.User
-	if err := userService.GetUserByEmail(req.Email, &user); err != nil {
-		response.SendUnauthorizedResponse(c, "Invalid email or password")
+	// Use the new method that supports both email and username
+	if err := userService.GetUserByIdentifier(req.Identifier, &user); err != nil {
+		response.SendUnauthorizedResponse(c, "Invalid credentials")
 		return
 	}
 
 	if !hashing.HashVerify(req.Password, user.Password) {
-		response.SendUnauthorizedResponse(c, "Invalid email or password")
+		response.SendUnauthorizedResponse(c, "Invalid credentials")
 		return
 	}
 
@@ -74,9 +76,24 @@ func LoginHandler(c *gin.Context) {
 		return
 	}
 
-	// Store token in DB (optional)
-	if err := userService.UpdateUserToken(user.ID, token); err != nil {
-		log.Println("Failed to update user token:", err)
+	// Update token, login timestamps, and expiration
+	currentTime := time.Now().Format(time.RFC3339)
+	expirationTime := time.Now().Add(24 * time.Hour).Format(time.RFC3339)
+
+	additionalUpdates := map[string]interface{}{
+		"last_login_on": currentTime,
+		"updated_on":    currentTime,
+		"expired_on":    expirationTime,
+	}
+
+	// Set first_login_on only if it's the first login
+	if user.FirstLoginOn == "" {
+		additionalUpdates["first_login_on"] = currentTime
+	}
+
+	if err := userService.UpdateUserToken(user.ID, token, additionalUpdates); err != nil {
+		log.Println("Failed to update user login info:", err)
+		// Don't fail the login if this update fails
 	}
 
 	c.JSON(200, models.LoginResponse{

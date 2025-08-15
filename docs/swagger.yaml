@@ -4,9 +4,9 @@ info:
   version: 1.0.0
   description: API documentation for the DjjsEventReporting application
 servers:
-  - url: 'https://gateway-dev-api.djjs.com/admin'
+  - url: 'https://eventsreportingapidev.djjs.org/admin'
     description: Development server
-  - url: 'http://localhost:8050/admin'
+  - url: 'http://localhost:8080/admin'
     description: Local development server
 components:
   securitySchemes:
@@ -240,7 +240,7 @@ paths:
           description: Invalid input
         '401':
           description: Unauthorized
-  /users/create:
+  /users:
     post:
       summary: Create a new user
       description: Add a new user to the database. Admins can create Branch Coordinators and Branch Assistants. Branch Coordinators can create Branch Assistants.
@@ -323,7 +323,7 @@ paths:
   /users/login:
     post:
       summary: Login and get JWT token
-      description: Authenticate user and receive a JWT token for protected endpoints.
+      description: Authenticate user with email or username and receive a JWT token for protected endpoints.
       tags:
         - Auth
       requestBody:
@@ -333,15 +333,17 @@ paths:
             schema:
               type: object
               required:
-                - email
+                - identifier
                 - password
               properties:
-                email:
+                identifier:
                   type: string
-                  description: User email address.
+                  description: User email address or username.
+                  example: admin@djjs.org or admin
                 password:
                   type: string
                   description: User password.
+                  example: admin123
       responses:
         '200':
           description: Login successful
@@ -361,3 +363,316 @@ paths:
                     description: User type.
         '401':
           description: Invalid credentials
+  /branches/search:
+    get:
+      tags:
+        - Branch
+      summary: Search branches with filters
+      description: 'Search branches using various filters like city, state, infrastructure type, etc.'
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: branch_id
+          in: query
+          description: Branch ID to filter by
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: branch_name
+          in: query
+          description: Branch name
+          required: false
+          schema:
+            type: string
+        - name: state_id
+          in: query
+          description: State ID to filter by
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: district_id
+          in: query
+          description: District ID to filter by
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: country_id
+          in: query
+          description: Country ID to filter by
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: city
+          in: query
+          description: City name
+          required: false
+          schema:
+            type: string
+        - name: established_from
+          in: query
+          description: Branch established from date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: established_to
+          in: query
+          description: Branch established to date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: created_from
+          in: query
+          description: Branch created from date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: created_to
+          in: query
+          description: Branch created to date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: updated_from
+          in: query
+          description: Branch updated from date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: updated_to
+          in: query
+          description: Branch updated to date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: infrastructure_type
+          in: query
+          description: Infrastructure type
+          required: false
+          schema:
+            type: string
+        - name: sewadar_role
+          in: query
+          description: Sewadar role
+          required: false
+          schema:
+            type: string
+        - name: sewadar_gender
+          in: query
+          description: Sewadar gender
+          required: false
+          schema:
+            type: string
+        - name: min_total_sewadars
+          in: query
+          description: Minimum total sewadars count
+          required: false
+          schema:
+            type: integer
+        - name: max_total_sewadars
+          in: query
+          description: Maximum total sewadars count
+          required: false
+          schema:
+            type: integer
+        - name: min_total_infrastructure
+          in: query
+          description: Minimum total infrastructure count
+          required: false
+          schema:
+            type: integer
+        - name: max_total_infrastructure
+          in: query
+          description: Maximum total infrastructure count
+          required: false
+          schema:
+            type: integer
+        - name: sort_by
+          in: query
+          description: Sort field
+          required: false
+          schema:
+            type: string
+            enum:
+              - branch_branch_id
+              - branch_branch_name
+              - branch_city
+              - branch_established_date
+              - branch_created_on
+              - branch_updated_on
+              - state_state_name
+              - district_district_name
+        - name: sort_dir
+          in: query
+          description: Sort direction
+          required: false
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+        - name: limit
+          in: query
+          description: Number of results to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Number of results to skip
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Successful branch search
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      branches:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            branch_branch_id:
+                              type: integer
+                              format: int64
+                              description: Branch ID
+                              example: 123
+                            branch_branch_name:
+                              type: string
+                              description: Branch name
+                              example: Mumbai Central Branch
+                            branch_state_id:
+                              type: integer
+                              format: int64
+                              description: State ID
+                              example: 1
+                            branch_district_id:
+                              type: integer
+                              format: int64
+                              description: District ID
+                              example: 5
+                            branch_country_id:
+                              type: integer
+                              format: int64
+                              description: Country ID
+                              example: 1
+                            branch_city:
+                              type: string
+                              description: City name
+                              example: Mumbai
+                            branch_established_date:
+                              type: string
+                              format: date
+                              description: Branch established date
+                              example: '2020-06-15'
+                            branch_created_on:
+                              type: string
+                              format: date-time
+                              description: Branch created timestamp
+                              example: '2020-06-15T10:30:00Z'
+                            branch_updated_on:
+                              type: string
+                              format: date-time
+                              description: Branch updated timestamp
+                              example: '2023-12-01T14:45:00Z'
+                            state_state_name:
+                              type: string
+                              description: State name
+                              example: Maharashtra
+                            district_district_name:
+                              type: string
+                              description: District name
+                              example: Mumbai
+                            infrastructure_infrastructure_type:
+                              type: string
+                              description: Infrastructure type
+                              example: School
+                            sewa_sewadar_name:
+                              type: string
+                              description: Sewadar name
+                              example: John Doe
+                            sewa_sewadar_role:
+                              type: string
+                              description: Sewadar role
+                              example: Teacher
+                            sewa_sewadar_gender:
+                              type: string
+                              description: Sewadar gender
+                              example: Male
+                            total_sewadar_count:
+                              type: integer
+                              format: int64
+                              description: Total number of sewadars
+                              example: 25
+                            total_infrastructure_count:
+                              type: integer
+                              format: int64
+                              description: Total number of infrastructure items
+                              example: 5
+                      total:
+                        type: integer
+                        description: Total number of branches returned
+                        example: 25
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid parameters
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Unauthorized
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Internal server error

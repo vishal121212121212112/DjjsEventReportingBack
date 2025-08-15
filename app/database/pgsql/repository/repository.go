@@ -3,6 +3,7 @@ package database
 import (
 	connection "event-reporting/app/database/pgsql/connection"
 	"fmt"
+	"strings"
 	"time"
 
 	"gorm.io/gorm"
@@ -238,4 +239,20 @@ func (r *Repository) FindAllWithRawCondition(model interface{}, conditions map[s
 		query = query.Offset(offset)
 	}
 	return query.Find(model).Error
+}
+
+// ExecuteRawFunction executes a PostgreSQL function and scans results into the provided model
+func (r *Repository) ExecuteRawFunction(functionName string, args []interface{}, result interface{}) error {
+	// Build the function call with parameters
+	query := fmt.Sprintf("SELECT * FROM %s(", functionName)
+
+	// Add placeholders for parameters
+	placeholders := make([]string, len(args))
+	for i := range args {
+		placeholders[i] = fmt.Sprintf("$%d", i+1)
+	}
+	query += strings.Join(placeholders, ", ") + ")"
+
+	// Execute the raw SQL
+	return connection.Db.Raw(query, args...).Scan(result).Error
 }

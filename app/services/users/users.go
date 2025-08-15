@@ -34,14 +34,24 @@ func (s *UserService) CreateUser(creator models.User, req models.UserCreateReque
 		return "", errors.New("permission denied")
 	}
 
+	// Check if email already exists
 	conditions := map[string]interface{}{"email": req.Email}
 	var existingUser models.User
 	if err := s.repo.Find(&existingUser, conditions); err == nil {
 		return "", errors.New("email already exists")
 	}
 
+	// Check if username already exists
+	if req.Username != "" {
+		conditions = map[string]interface{}{"username": req.Username}
+		if err := s.repo.Find(&existingUser, conditions); err == nil {
+			return "", errors.New("username already exists")
+		}
+	}
+
 	newUser.ID = uuid.New()
 	newUser.Email = req.Email
+	newUser.Username = req.Username // Set the username
 	newUser.Type = req.Type
 	newUser.CreatedOn = time.Now().Format(time.RFC3339)
 	newUser.UpdatedOn = time.Now().Format(time.RFC3339)
@@ -77,14 +87,60 @@ func (s *UserService) GetUserByEmail(email string, user *models.User) error {
 	return nil
 }
 
+// Add new method to get user by username
+func (s *UserService) GetUserByUsername(username string, user *models.User) error {
+	if username == "" {
+		return errors.New("username is required")
+	}
+	conditions := map[string]interface{}{"username": username}
+	err := s.repo.Find(user, conditions)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Add new method to get user by email OR username
+func (s *UserService) GetUserByIdentifier(identifier string, user *models.User) error {
+	if identifier == "" {
+		return errors.New("identifier is required")
+	}
+
+	// Try to find by email first
+	conditions := map[string]interface{}{"email": identifier}
+	err := s.repo.Find(user, conditions)
+	if err == nil {
+		return nil // Found by email
+	}
+
+	// If not found by email, try username
+	conditions = map[string]interface{}{"username": identifier}
+	err = s.repo.Find(user, conditions)
+	if err != nil {
+		return errors.New("user not found")
+	}
+
+	return nil
+}
+
 func (s *UserService) GetUserByID(userID string, user *models.User) error {
 	conditions := map[string]interface{}{"id": userID}
 	return s.repo.Find(user, conditions)
 }
 
-func (s *UserService) UpdateUserToken(userID uuid.UUID, token string) error {
+func (s *UserService) UpdateUserToken(userID uuid.UUID, token string, additionalUpdates map[string]interface{}) error {
 	conditions := map[string]interface{}{"id": userID}
 	updates := map[string]interface{}{"token": token}
+
+	// Merge additional updates
+	for key, value := range additionalUpdates {
+		updates[key] = value
+	}
+
 	return s.repo.UpdateFields(&models.User{}, conditions, updates)
-	// return s.repo.DB.Model(&models.User{}).Where("id = ?", userID).Update("token", token).Error
+}
+
+func (s *UserService) UpdateUserLoginInfo(userID uuid.UUID, updates map[string]interface{}) error {
+	conditions := map[string]interface{}{"id": userID}
+	return s.repo.UpdateFields(&models.User{}, conditions, updates)
 }

@@ -17,7 +17,7 @@ var eventHistoryHandler EventHistoryService.EventHistoryService
 func EventHistoryPostHandler(c *gin.Context) {
 	logger.Log.Info.Println("app:handlers:eventHistory:EventHistoryPostHandler")
 
-	var req models.CreateFullEventRequest 
+	var req models.CreateFullEventRequest
 	// if err := c.ShouldBindJSON(&req); err != nil {
 	// 	logger.Log.Error.Errorln("Error binding JSON:", err)
 	// 	response.SendBadRequestResponse(c, "Invalid request data: "+err.Error())

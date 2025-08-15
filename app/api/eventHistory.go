@@ -1,7 +1,7 @@
 package api
 
 import (
-	eventHistoryHandler "event-reporting/app/handlers/eventHistory"
+	eventHistoryHandler "event-reporting/app/handler/eventHistory"
 	middleware "event-reporting/app/helpers/middleware"
 	"fmt"
 

@@ -68,7 +68,10 @@ func JWT() gin.HandlerFunc {
 			return
 		}
 		tokenStr := strings.TrimPrefix(auth, "Bearer ")
-		token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (any, error) { return secret, nil })
+		// Fix: Convert secret string to []byte
+		token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (any, error) {
+			return []byte(secret), nil
+		})
 		if err != nil || !token.Valid {
 			c.AbortWithStatus(http.StatusUnauthorized)
 			return

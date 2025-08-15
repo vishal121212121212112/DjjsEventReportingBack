@@ -7,7 +7,7 @@ info:
 servers:
   - url: https://eventsreportingapidev.djjs.org/admin 
     description: Development server
-  - url: http://localhost:8050/admin
+  - url: http://localhost:8080/admin
     description: Local development server
 
 components:
@@ -19,10 +19,11 @@ components:
 paths:
   /eventHistory/post:
     $ref: "./paths/eventHistory.yaml"
-  /users/create:
-    $ref: ./paths/user.yaml
+  /users:
+    $ref: "./paths/user.yaml"
   /users/login:
-    $ref: ./paths/login.yaml
-
+    $ref: "./paths/login.yaml"
+  /branches/search:
+    $ref: "./paths/branch.yaml"
 
 

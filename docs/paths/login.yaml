@@ -1,6 +1,6 @@
 post:
   summary: Login and get JWT token
-  description: Authenticate user and receive a JWT token for protected endpoints.
+  description: Authenticate user with email or username and receive a JWT token for protected endpoints.
   tags:
     - Auth
   requestBody:
@@ -10,15 +10,17 @@ post:
         schema:
           type: object
           required:
-            - email
+            - identifier
             - password
           properties:
-            email:
+            identifier:
               type: string
-              description: User email address.
+              description: User email address or username.
+              example: "admin@djjs.org or admin"
             password:
               type: string
               description: User password.
+              example: "admin123"
   responses:
     "200":
       description: Login successful

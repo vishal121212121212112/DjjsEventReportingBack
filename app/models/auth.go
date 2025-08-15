@@ -5,8 +5,8 @@ type Auth struct {
 }
 
 type LoginRequest struct {
-	Email    string `json:"email" binding:"required,email"`
-	Password string `json:"password" binding:"required"`
+	Identifier string `json:"identifier" binding:"required"` // Can be email or username
+	Password   string `json:"password" binding:"required"`
 }
 
 type LoginResponse struct {
