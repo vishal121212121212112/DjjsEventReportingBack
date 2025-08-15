@@ -28,7 +28,7 @@ jobs:
         run: go test ./...
 
       - name: Build project
-        run: go build -o myapp .
+        run: go build -o myapp ./cmd/main  # Sahi path use kar rahe hain
 
       - name: Build Docker image
         run: docker build -t myapp:latest .
