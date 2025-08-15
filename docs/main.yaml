@@ -5,7 +5,7 @@ info:
   description: API documentation for the DjjsEventReporting application
 
 servers:
-  - url: https://gateway-dev-api.djjs.com/admin
+  - url: https://eventsreportingapidev.djjs.org/admin 
     description: Development server
   - url: http://localhost:8050/admin
     description: Local development server
