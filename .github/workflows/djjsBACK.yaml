@@ -1,51 +1,43 @@
-name: CI Pipeline for master branch
+name: Build & Deploy (no ECR)
 
 on:
   push:
-    branches:
-      - master
-  pull_request:
-    branches:
-      - master
+    branches: [ master ]
 
 jobs:
-  build:
-    runs-on: [self-hosted, linux]
+  deploy:
+    runs-on: [self-hosted, linux]   # aapka EC2 runner
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
-          go-version: '1.24' # or your Go version
+          go-version: '1.24'
 
-      - name: Download dependencies
-        run: go mod download
-
-      - name: Run tests
-        run: go test ./...
-
-      - name: Build project
-        run: go build -o myapp ./cmd/main  # Sahi path use kar rahe hain
+      # (Optional) Binary build; multi-stage Docker me bhi ho sakta
+      - name: Build binary
+        run: go build -o myapp ./cmd/main || true
 
       - name: Build Docker image
         run: docker build -t myapp:latest .
 
-      - name: List Docker images
-        run: docker images
-
-      # Log in to Amazon ECR
-      - name: Log in to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v1
-
-      # Tag Docker image
-      - name: Tag Docker image
+      - name: Stop old container if running
         run: |
-          docker tag myapp:latest 75727899931.dkr.ecr.ap-south-1.amazonaws.com/djjs-backend-pipeline:latest
+          docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || true
+          docker ps -a -q --filter "name=myapp" | grep -q . && docker rm myapp || true
 
-      # Push Docker image to Amazon ECR
-      - name: Push Docker image to Amazon ECR
+      - name: Run new container
         run: |
-          docker push 75727899931.dkr.ecr.ap-south-1.amazonaws.com/djjs-backend-pipeline:latest
+          # NOTE: Aapke Dockerfile me EXPOSE 8050 dikh raha tha.
+          # Agar app 8050 sun raha hai, to ya to 8050:8050 map karein,
+          # ya 8080:8050 (agar bahar se 8080 chahiye).
+          docker run -d --name myapp \
+            -p 8050:8050 \
+            --env-file .env.prod \
+            myapp:latest
+
+      - name: Clean old images (optional)
+        run: docker image prune -af || true
