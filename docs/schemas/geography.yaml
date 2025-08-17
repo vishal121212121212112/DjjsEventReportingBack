@@ -1,0 +1,146 @@
+components:
+  schemas:
+    CountryDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        iso2:
+          type: string
+        iso3:
+          type: string
+        phone_code:
+          type: string
+        currency:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    StateDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        country_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        code:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    DistrictDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        state_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    CityDTO:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        district_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        pincode:
+          type: string
+        latitude:
+          type: number
+          format: float
+        longitude:
+          type: number
+          format: float
+        is_capital:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    PagedCountries:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CountryDTO'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    PagedStates:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/StateDTO'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    PagedDistricts:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/DistrictDTO'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer
+
+    PagedCities:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CityDTO'
+        total:
+          type: integer
+        limit:
+          type: integer
+        offset:
+          type: integer

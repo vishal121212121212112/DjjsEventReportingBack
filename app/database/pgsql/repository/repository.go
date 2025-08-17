@@ -17,7 +17,7 @@ func NewRepository() *Repository {
 	if connection.Db == nil {
 		panic("Database connection is not initialized")
 	}
-	return &Repository{}
+	return &Repository{DB: connection.Db}
 }
 
 func (r *Repository) Find(model interface{}, conditions map[string]interface{}) error {
@@ -255,4 +255,29 @@ func (r *Repository) ExecuteRawFunction(functionName string, args []interface{},
 
 	// Execute the raw SQL
 	return connection.Db.Raw(query, args...).Scan(result).Error
+}
+
+// FindAllWithRawConditionAndOrder fetches rows with optional raw WHERE, ORDER BY, LIMIT/OFFSET.
+func (r *Repository) FindAllWithRawConditionAndOrder(
+	model interface{},
+	conditions map[string]interface{},
+	rawCondition string,
+	args []interface{},
+	orderBy string, // e.g. "name ASC"
+	limit, offset int,
+) error {
+	query := connection.Db.Model(model).Where(conditions)
+	if rawCondition != "" {
+		query = query.Where(rawCondition, args...)
+	}
+	if orderBy != "" {
+		query = query.Order(orderBy)
+	}
+	if limit > 0 {
+		query = query.Limit(limit)
+	}
+	if offset > 0 {
+		query = query.Offset(offset)
+	}
+	return query.Find(model).Error
 }

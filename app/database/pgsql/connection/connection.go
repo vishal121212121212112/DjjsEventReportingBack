@@ -1,6 +1,7 @@
 package connection
 
 import (
+	"database/sql"
 	"event-reporting/app/models"
 	"fmt"
 	"log"
@@ -57,6 +58,11 @@ func ConnectDatabase() {
 	}
 	log.Println("✅ Successfully connected to PostgreSQL!")
 
+	if err := ensurePgcrypto(db); err != nil {
+		log.Fatalf("❌ Failed to ensure pgcrypto: %v", err)
+	}
+	log.Println("🔒 pgcrypto extension is ready (gen_random_uuid available)")
+
 	// Run Migrations
 	log.Println("🔄 Running database migrations...")
 	err = db.AutoMigrate(
@@ -67,7 +73,14 @@ func ConnectDatabase() {
 		&models.ProgramDonation{},
 		&models.ProgramVolunteer{},
 		&models.ProgramMaster{},
+
+		// geographies
+		&models.Country{},
+		&models.State{},
+		&models.District{},
+		&models.City{},
 	)
+
 	if err != nil {
 		log.Fatal("❌ Failed to migrate models:", err)
 	}
@@ -76,4 +89,17 @@ func ConnectDatabase() {
 	// Assign connection to global variable
 	Db = db
 	log.Println("🚀 Database connection initialized successfully!")
+}
+
+func ensurePgcrypto(db *gorm.DB) error {
+	// CREATE EXTENSION is idempotent
+	if err := db.Exec(`CREATE EXTENSION IF NOT EXISTS pgcrypto`).Error; err != nil {
+		return fmt.Errorf("create extension pgcrypto: %w", err)
+	}
+	// optional: quick sanity check that function is callable
+	var dummy sql.NullString
+	if err := db.Raw(`SELECT gen_random_uuid()::text`).Scan(&dummy).Error; err != nil {
+		return fmt.Errorf("gen_random_uuid not available (pgcrypto not loaded?): %w", err)
+	}
+	return nil
 }

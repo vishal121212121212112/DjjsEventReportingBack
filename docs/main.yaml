@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: DjjsEventReporting
+  title: DjjsEventReporting API
   version: 1.0.0
-  description: API documentation for the DjjsEventReporting application
+  description: API documentation for the DjjsEventReporting application.
 
 servers:
   - url: https://eventsreportingapidev.djjs.org/admin 
@@ -25,5 +25,14 @@ paths:
     $ref: "./paths/login.yaml"
   /branches/search:
     $ref: "./paths/branch.yaml"
+  /geography/countries/:
+    $ref: "./paths/geography.yaml#/geography/countries"
+  /geography/states/:
+    $ref: "./paths/geography.yaml#/geography/states"
+  /geography/districts/:
+    $ref: "./paths/geography.yaml#/geography/districts"
+  /geography/cities/:
+    $ref: "./paths/geography.yaml#/geography/cities"
+
 
 

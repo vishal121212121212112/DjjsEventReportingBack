@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  title: DjjsEventReporting
+  title: DjjsEventReporting API
   version: 1.0.0
-  description: API documentation for the DjjsEventReporting application
+  description: API documentation for the DjjsEventReporting application.
 servers:
   - url: 'https://eventsreportingapidev.djjs.org/admin'
     description: Development server
@@ -676,3 +676,294 @@ paths:
                   message:
                     type: string
                     example: Internal server error
+  /geography/countries/:
+    get:
+      summary: Get a list of countries
+      description: Retrieve a paginated list of countries.
+      tags:
+        - Geography
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          description: Search query for country name.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of results to skip.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of countries retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        iso2:
+                          type: string
+                        iso3:
+                          type: string
+                        phone_code:
+                          type: string
+                        currency:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Unauthorized - Invalid or missing token.
+  /geography/states/:
+    get:
+      summary: Get a list of states
+      description: Retrieve a paginated list of states filtered by country.
+      tags:
+        - Geography
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: country_id
+          in: query
+          description: UUID of the country to filter states.
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search query for state name.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of results to skip.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of states retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        country_id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        code:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Unauthorized - Invalid or missing token.
+  /geography/districts/:
+    get:
+      summary: Get a list of districts
+      description: Retrieve a paginated list of districts filtered by state.
+      tags:
+        - Geography
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: state_id
+          in: query
+          description: UUID of the state to filter districts.
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search query for district name.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of results to skip.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of districts retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        state_id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Unauthorized - Invalid or missing token.
+  /geography/cities/:
+    get:
+      summary: Get a list of cities
+      description: Retrieve a paginated list of cities filtered by district.
+      tags:
+        - Geography
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: district_id
+          in: query
+          description: UUID of the district to filter cities.
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search query for city name.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of results to skip.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of cities retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        district_id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        pincode:
+                          type: string
+                        latitude:
+                          type: number
+                          format: float
+                        longitude:
+                          type: number
+                          format: float
+                        is_capital:
+                          type: boolean
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Unauthorized - Invalid or missing token.
