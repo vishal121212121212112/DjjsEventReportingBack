@@ -3,7 +3,9 @@ package userServiceHandler
 import (
 	"errors"
 	database "event-reporting/app/database/pgsql/repository"
+	"event-reporting/app/dtos"
 	"event-reporting/app/models"
+	branchServiceHandler "event-reporting/app/services/branch"
 	"event-reporting/app/utils/constants"
 	"event-reporting/app/utils/hashing"
 	"fmt"
@@ -51,7 +53,7 @@ func (s *UserService) CreateUser(creator models.User, req models.UserCreateReque
 
 	newUser.ID = uuid.New()
 	newUser.Email = req.Email
-	newUser.Username = req.Username // Set the username
+	newUser.Username = req.Username
 	newUser.Type = req.Type
 	newUser.CreatedOn = time.Now().Format(time.RFC3339)
 	newUser.UpdatedOn = time.Now().Format(time.RFC3339)
@@ -70,6 +72,19 @@ func (s *UserService) CreateUser(creator models.User, req models.UserCreateReque
 	newUser.Password = string(hashedPassword)
 	if err := s.repo.Create(&newUser); err != nil {
 		return "", err
+	}
+
+	if req.Type == constants.UserTypeBranchCoordinator {
+		branchReq := dtos.CreateBranchWithUserEmail{
+			Email:     req.Email,
+			CreatedBy: creator.ID.String(),
+			UpdatedBy: newUser.ID.String(),
+		}
+
+		branchService := branchServiceHandler.NewBranchService(s.repo)
+		if err := branchService.CreateBranchWithUserEmail(branchReq); err != nil {
+			return "", fmt.Errorf("failed to create branch for branch coordinator: %w", err)
+		}
 	}
 
 	return newUser.ID.String(), nil

@@ -79,6 +79,9 @@ func ConnectDatabase() {
 		&models.State{},
 		&models.District{},
 		&models.City{},
+
+		// branch
+		&models.Branch{},
 	)
 
 	if err != nil {

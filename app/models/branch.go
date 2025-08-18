@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -19,18 +21,98 @@ type Branch struct {
 	EntryTimestamp   string    `json:"entry_timestamp" gorm:"column:entry_timestamp"`
 	UpdatedTimestamp string    `json:"updated_timestamp" gorm:"column:updated_timestamp"`
 	ContactNumber    string    `json:"contact_number" gorm:"column:contact_number"`
-	Email            string    `json:"email" gorm:"column:email;uniqueIndex"`
+	Email            string    `json:"email" gorm:"column:email;unique"`
 	AashramArea      string    `json:"aashram_area" gorm:"column:aashram_area"`
 	OpenDays         int       `json:"open_days" gorm:"column:open_days"`
 	OpeningTime      string    `json:"opening_time" gorm:"column:opening_time"`
 	ClosingTime      string    `json:"closing_time" gorm:"column:closing_time"`
-	CreatedOn        string    `json:"created_on" gorm:"column:created_on"`
-	UpdatedOn        string    `json:"updated_on" gorm:"column:updated_on"`
+	CreatedOn        time.Time `json:"created_on" gorm:"column:created_on"`
+	UpdatedOn        time.Time `json:"updated_on" gorm:"column:updated_on"`
 	CreatedBy        uuid.UUID `json:"created_by" gorm:"column:created_by"`
 	UpdatedBy        uuid.UUID `json:"updated_by" gorm:"column:updated_by"`
 }
 
-func (Branch) TableName() string { return "branch" }
+func (Branch) TableName() string { return "branches" }
+
+type BranchDistrict struct {
+	ID               uuid.UUID `json:"id" gorm:"column:id;type:uuid;default:gen_random_uuid();primaryKey"`
+	FkBranchID       uuid.UUID `json:"fk_branch_id" gorm:"column:fk_branch_id;type:uuid;not null"`
+	District         string    `json:"district" gorm:"column:district;not null"`
+	AreaName         string    `json:"area_name" gorm:"column:area_name"`
+	AreaCoverage     string    `json:"area_coverage" gorm:"column:area_coverage"`
+	DistrictCoverage string    `json:"district_coverage" gorm:"column:district_coverage"`
+	CreatedOn        time.Time `json:"created_on" gorm:"column:created_on;default:CURRENT_TIMESTAMP"`
+	UpdatedOn        time.Time `json:"updated_on" gorm:"column:updated_on;default:CURRENT_TIMESTAMP"`
+	CreatedBy        uuid.UUID `json:"created_by" gorm:"column:created_by;type:uuid;not null"`
+	UpdatedBy        uuid.UUID `json:"updated_by" gorm:"column:updated_by;type:uuid;not null"`
+}
+
+func (BranchDistrict) TableName() string {
+	return "branches_districts"
+}
+
+type BranchArea struct {
+	ID           uuid.UUID `json:"id" gorm:"column:id;type:uuid;default:gen_random_uuid();primaryKey"`
+	FkBranchID   uuid.UUID `json:"fk_branch_id" gorm:"column:fk_branch_id;type:uuid;not null"`
+	AreaName     string    `json:"area_name" gorm:"column:area_name;not null"`
+	AreaCoverage string    `json:"area_coverage" gorm:"column:area_coverage"`
+	CreatedOn    time.Time `json:"created_on" gorm:"column:created_on;default:CURRENT_TIMESTAMP"`
+	UpdatedOn    time.Time `json:"updated_on" gorm:"column:updated_on;default:CURRENT_TIMESTAMP"`
+	CreatedBy    uuid.UUID `json:"created_by" gorm:"column:created_by;type:uuid;not null"`
+	UpdatedBy    uuid.UUID `json:"updated_by" gorm:"column:updated_by;type:uuid;not null"`
+}
+
+func (BranchArea) TableName() string {
+	return "branches_areas"
+}
+
+type BranchInfrastructure struct {
+	ID                 uuid.UUID `json:"id" gorm:"column:id;type:uuid;default:gen_random_uuid();primaryKey"`
+	FkBranchID         uuid.UUID `json:"fk_branch_id" gorm:"column:fk_branch_id;type:uuid;not null"`
+	InfrastructureType string    `json:"infrastructure_type" gorm:"column:infrastructure_type;not null"` // Hall, office, etc.
+	Count              int       `json:"count" gorm:"column:count;default:0"`
+	CreatedOn          time.Time `json:"created_on" gorm:"column:created_on;default:CURRENT_TIMESTAMP"`
+	UpdatedOn          time.Time `json:"updated_on" gorm:"column:updated_on;default:CURRENT_TIMESTAMP"`
+	CreatedBy          uuid.UUID `json:"created_by" gorm:"column:created_by;type:uuid;not null"`
+	UpdatedBy          uuid.UUID `json:"updated_by" gorm:"column:updated_by;type:uuid;not null"`
+	DeletedAt          time.Time `json:"deleted_at" gorm:"column:deleted_at;default:CURRENT_TIMESTAMP"`
+}
+
+func (BranchInfrastructure) TableName() string {
+	return "branches_infrastructures"
+}
+
+type BranchSamarpitSewadar struct {
+	ID               uuid.UUID `json:"id" gorm:"column:id;type:uuid;default:gen_random_uuid();primaryKey"`
+	FkBranchID       uuid.UUID `json:"fk_branch_id" gorm:"column:fk_branch_id;type:uuid;not null"`
+	Role             string    `json:"role" gorm:"column:role;not null"` // Preacher/Sewadar
+	VolunteersName   string    `json:"volunteers_name" gorm:"column:volunteers_name;not null"`
+	Gender           string    `json:"gender" gorm:"column:gender"`
+	Age              int       `json:"age" gorm:"column:age"`
+	Responsibility   string    `json:"responsibility" gorm:"column:responsibility"` // Driving, Mata, etc.
+	DateOfSamarpit   string    `json:"date_of_samarpit" gorm:"column:date_of_samarpit"`
+	Qualification    string    `json:"qualification" gorm:"column:qualification"`
+	DOB              string    `json:"dob" gorm:"column:dob"`
+	ContactNumber    string    `json:"contact_number" gorm:"column:contact_number"`
+	Email            string    `json:"email" gorm:"column:email;unique"`
+	DateOfInitiation string    `json:"date_of_initiation" gorm:"column:date_of_initiation"`
+	IsActive         bool      `json:"is_active" gorm:"column:is_active;default:true"`
+	CreatedOn        time.Time `json:"created_on" gorm:"column:created_on;default:CURRENT_TIMESTAMP"`
+	UpdatedOn        time.Time `json:"updated_on" gorm:"column:updated_on;default:CURRENT_TIMESTAMP"`
+	CreatedBy        uuid.UUID `json:"created_by" gorm:"column:created_by;type:uuid;not null"`
+	UpdatedBy        uuid.UUID `json:"updated_by" gorm:"column:updated_by;type:uuid;not null"`
+}
+
+func (BranchSamarpitSewadar) TableName() string {
+	return "branches_samarpit_sewadars"
+}
+
+type BranchDetails struct {
+	Districts       []BranchDistrict
+	Areas           []BranchArea
+	Infrastructures []BranchInfrastructure
+	Sewadars        []BranchSamarpitSewadar
+}
 
 // BranchSearchResponse represents the response from get_branch function
 type BranchSearchResponse struct {
