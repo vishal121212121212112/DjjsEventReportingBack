@@ -1,12 +1,12 @@
-name: CI Pipeline for master branch
+name: CI Pipeline for Go App
 
 on:
   push:
     branches:
-      - master  # This will trigger the workflow on push to the master branch
+      - master
   pull_request:
     branches:
-      - master  # This will trigger the workflow on PR targeting the master branch
+      - master
 
 jobs:
   build:
@@ -16,16 +16,31 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Install Go 1.24
+        uses: actions/setup-go@v3
         with:
-          node-version: '14'
+          go-version: '1.24'
 
-      - name: Install dependencies
-        run: npm install
+      - name: Build binary (optional)
+        run: |
+          go build -o myapp ./cmd/main || true
 
-      - name: Run tests
-        run: npm test
+      - name: Build Docker image
+        run: |
+          docker build -t myapp:latest .
 
-      - name: Build project
-        run: npm run build
+      - name: Stop & remove old container if present
+        run: |
+          docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || true
+          docker ps -a -q --filter "name=myapp" | grep -q . && docker rm myapp || true
+
+      - name: Run new container
+        run: |
+          docker run -d --name myapp \
+            -p 8050:8050 \
+            --env-file .env.prod \
+            myapp:latest
+
+      - name: Prune old images
+        run: |
+          docker image prune -af || true
