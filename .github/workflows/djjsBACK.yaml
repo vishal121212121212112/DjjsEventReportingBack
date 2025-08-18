@@ -1,30 +1,48 @@
-  - task: GoTool@0
-      inputs:
-        version: '1.24.0'
-      displayName: 'Install Go 1.24 (optional)'
-      continueOnError: true
+name: CI Pipeline for Go App
 
-    # Optional: local binary build (Docker multi-stage me bhi ho sakta hai)
-    - script: |
-        go build -o myapp ./cmd/main || true
-      displayName: 'Build binary (optional)'
+on:
+  push:
+    branches:
+      - master  # This will trigger the workflow on push to the master branch
+  pull_request:
+    branches:
+      - master  # This will trigger the workflow on PR targeting the master branch
 
-    - script: |
-        docker build -t myapp:latest .
-      displayName: 'Build Docker image'
+jobs:
+  build:
+    runs-on: [self-hosted, linux]
 
-    - script: |
-        docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || true
-        docker ps -a -q --filter "name=myapp" | grep -q . && docker rm myapp || true
-      displayName: 'Stop & remove old container if present'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - script: |
-        # NOTE: Dockerfile me EXPOSE 8050 ho to 8050:8050 map karein.
-        docker run -d --name myapp \
-          -p 8050:8050 \
-          --env-file .env.prod \
-          myapp:latest
-      displayName: 'Run new container'
+      - name: Install Go 1.24
+        uses: GoTool@1.24
+        displayName: 'Install Go 1.24 (optional)'
+        continueOnError: true
 
-    - script: docker image prune -af || true
-      displayName: 'Prune old images'
+      # Optional: Build binary locally (this can also be done with Docker multi-stage build)
+      - script: |
+          go build -o myapp ./cmd/main || true
+        displayName: 'Build binary (optional)'
+
+      - script: |
+          docker build -t myapp:latest .
+        displayName: 'Build Docker image'
+
+      - script: |
+          docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || true
+          docker ps -a -q --filter "name=myapp" | grep -q . && docker rm myapp || true
+        displayName: 'Stop & remove old container if present'
+
+      - script: |
+          # NOTE: Dockerfile should expose port 8050 to 8050. Adjust as necessary.
+          docker run -d --name myapp \
+            -p 8050:8050 \
+            --env-file .env.prod \
+            myapp:latest
+        displayName: 'Run new container'
+
+      - script: |
+          docker image prune -af || true
+        displayName: 'Prune old images'
