@@ -1,19 +1,56 @@
 package main
 
 import (
+	"event-reporting/app/api"
+	"event-reporting/cmd/setup"
 	"log"
 
-	"event-reporting/app/api"
-	"event-reporting/app/helpers/registry"
+	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	routes, cfg := registry.Build()
-	r := api.NewRouter(*routes)
+// func SeedAdmin(repo *database.Repository) error {
+// 	adminEmail := "admin@djjs.org"
+// 	var user models.User
+// 	err := repo.Find(&user, map[string]interface{}{"email": adminEmail})
+// 	if err == nil {
+// 		return nil // already exists
+// 	}
+// 	// Hash the password
+// 	hashedPassword, err := hashing.HashData("admin123")
+// 	if err != nil {
+// 		return err
+// 	}
 
-	addr := ":" + cfg.AppPort
-	log.Printf("listening on %s (env=%s) ...", addr, cfg.AppEnv)
-	if err := r.Run(addr); err != nil {
-		log.Fatal(err)
+// 	admin := models.User{
+// 		ID:        uuid.New(),
+// 		Username:  "admin",
+// 		Email:     adminEmail,
+// 		Password:  hashedPassword, // Use hashed password
+// 		Type:      "hoadmin",
+// 		CreatedOn: time.Now().Format(time.RFC3339),
+// 		UpdatedOn: time.Now().Format(time.RFC3339),
+// 	}
+// 	return repo.Create(&admin)
+// }
+
+func main() {
+	// App setup (configuration, DB, RMQ, etc.)
+	configData := setup.AppSetup()
+
+	router := gin.Default()
+	router.Static("/files", "./public")
+
+	// Initialize all API routes
+	MyRouters := api.Routers{
+		Router: router,
+	}
+	// var repo *database.Repository
+	// SeedAdmin(repo)
+	MyRouters.Init()
+
+	// Start HTTP server
+	serverAddress := configData.App.Host + ":" + configData.App.Port
+	if err := router.Run(serverAddress); err != nil {
+		log.Fatal("❌ Unable to start the server:", err)
 	}
 }

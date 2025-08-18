@@ -1,0 +1,969 @@
+openapi: 3.0.0
+info:
+  title: DjjsEventReporting API
+  version: 1.0.0
+  description: API documentation for the DjjsEventReporting application.
+servers:
+  - url: 'https://eventsreportingapidev.djjs.org/admin'
+    description: Development server
+  - url: 'http://localhost:8080/admin'
+    description: Local development server
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /eventHistory/post:
+    post:
+      summary: Create a new Event History record
+      description: Add a new Event History to the database.
+      security:
+        - BearerAuth: []
+      tags:
+        - EventHistory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event_history:
+                  type: object
+                  properties:
+                    fk_program_master_id:
+                      type: string
+                      description: ID of the program master.
+                    fk_branch_id:
+                      type: string
+                      description: ID of the branch.
+                    start_date:
+                      type: string
+                      format: date
+                      description: Start date of the event.
+                    end_date:
+                      type: string
+                      format: date
+                      description: End date of the event.
+                    start_time:
+                      type: string
+                      format: time
+                      description: Start time of the event.
+                    end_time:
+                      type: string
+                      format: time
+                      description: End time of the event.
+                    theme_purpose_message_given:
+                      type: string
+                      description: Theme and purpose message for the event.
+                    is_complete:
+                      type: boolean
+                      description: Whether the event is completed.
+                    steps:
+                      type: integer
+                      description: Number of steps involved in the event.
+                    spiritual_orator:
+                      type: string
+                      description: Spiritual orator of the event.
+                    language:
+                      type: string
+                      description: Language used in the event.
+                    no_of_beneficiaries:
+                      type: integer
+                      description: Number of beneficiaries.
+                    no_of_initiation_male:
+                      type: integer
+                      description: Number of male initiations.
+                    no_of_initiation_female:
+                      type: integer
+                      description: Number of female initiations.
+                    no_of_initiation_kids:
+                      type: integer
+                      description: Number of kids initiation.
+                    time_duration:
+                      type: string
+                      description: Duration of the event.
+                    program_venue:
+                      type: string
+                      description: Venue of the event.
+                    city:
+                      type: string
+                      description: City where the event is held.
+                    state:
+                      type: string
+                      description: State where the event is held.
+                    country:
+                      type: string
+                      description: Country where the event is held.
+                    pin_code:
+                      type: string
+                      description: PIN code of the venue.
+                    frequency:
+                      type: string
+                      description: Frequency of the event.
+                    procession_route_start:
+                      type: string
+                      description: Start of the procession route.
+                    procession_route_end:
+                      type: string
+                      description: End of the procession route.
+                    no_of_participants:
+                      type: integer
+                      description: Number of participants.
+                    estimated_area_covered_km2:
+                      type: number
+                      description: Area covered in square kilometers.
+                guest_masters:
+                  type: object
+                  properties:
+                    guest_id:
+                      type: string
+                      description: ID of the guest.
+                    name:
+                      type: string
+                      description: Name of the guest.
+                    contact_number:
+                      type: string
+                      description: Contact number of the guest.
+                media_and_docs:
+                  type: object
+                  properties:
+                    fk_program_id:
+                      type: string
+                      description: ID of the related program.
+                    file_url:
+                      type: string
+                      description: URL of the media or document (required).
+                    file_name:
+                      type: string
+                      description: Name of the media or document (required).
+                    file_size:
+                      type: integer
+                      description: Size of the file in bytes (optional).
+                    content_type:
+                      type: string
+                      description: MIME content type of the file (optional).
+                program_donations:
+                  type: object
+                  properties:
+                    donation_id:
+                      type: integer
+                      description: ID of the donation.
+                    amount:
+                      type: number
+                      format: float
+                      description: Amount donated.
+                    donor_name:
+                      type: string
+                      description: Name of the donor.
+                    fk_program_id:
+                      type: string
+                      description: ID of the related program.
+                    fk_branch_id:
+                      type: string
+                      description: ID of the related branch.
+                    donation_type:
+                      type: string
+                      description: 'Type of donation (e.g., monetary, material).'
+                    total_amount:
+                      type: number
+                      format: float
+                      description: Total amount donated (for monetary donations).
+                    estimated_material_value:
+                      type: number
+                      format: float
+                      description: Estimated value of material donations.
+                program_volunteers:
+                  type: object
+                  properties:
+                    volunteer_id:
+                      type: integer
+                      description: ID of the volunteer.
+                    volunteer_name:
+                      type: string
+                      description: Name of the volunteer.
+                    hours_volunteered:
+                      type: number
+                      format: float
+                      description: Total hours volunteered.
+                    fk_program_id:
+                      type: string
+                      description: ID of the related program.
+                    fk_branch_id:
+                      type: string
+                      description: ID of the related branch.
+                    member_id:
+                      type: string
+                      description: ID of the member who is volunteering.
+                    gender:
+                      type: string
+                      description: Gender of the volunteer.
+                    volunteer_branch_name:
+                      type: string
+                      description: Name of the volunteer's branch.
+                    contact_number:
+                      type: string
+                      description: Contact number of the volunteer.
+                    no_of_days_involved_in_sewa:
+                      type: string
+                      description: Number of days involved in sewa.
+                    permanent_sewa:
+                      type: string
+                      description: Whether the volunteer is permanently engaged in sewa.
+                    sewa_department:
+                      type: string
+                      description: Department in which the volunteer serves.
+                program_masters:
+                  type: object
+                  properties:
+                    program_type:
+                      type: string
+                      description: 'Type of the program (e.g., seminar, workshop, etc.).'
+                    program_name:
+                      type: string
+                      description: 'Name of the program (e.g., "Yoga Workshop", "Tech Conference").'
+      responses:
+        '201':
+          description: Event history created successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/paths/~1eventHistory~1post/post/requestBody/content/application~1json/schema/properties/event_history'
+                  - type: object
+                    properties:
+                      id:
+                        type: integer
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+  /users:
+    post:
+      summary: Create a new user
+      description: Add a new user to the database. Admins can create Branch Coordinators and Branch Assistants. Branch Coordinators can create Branch Assistants.
+      security:
+        - BearerAuth: []
+      tags:
+        - Users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - email
+                - password
+                - type
+              properties:
+                username:
+                  type: string
+                  description: Username of the user.
+                email:
+                  type: string
+                  description: Email address of the user.
+                password:
+                  type: string
+                  description: Password for the user.
+                type:
+                  type: string
+                  description: 'User type (Admin, BranchCoordinator, BranchAssistant).'
+                branchId:
+                  type: string
+                  description: UUID of the associated branch (required for branch users).
+                contactNumber:
+                  type: string
+                  description: Contact number of the user.
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: Unique identifier for the user (UUID).
+                  username:
+                    type: string
+                    description: Username of the user.
+                  email:
+                    type: string
+                    description: Email address of the user.
+                  type:
+                    type: string
+                    description: 'User type (Admin, BranchCoordinator, BranchAssistant).'
+                  branchId:
+                    type: string
+                    description: UUID of the associated branch (for branch users).
+                  contactNumber:
+                    type: string
+                    description: Contact number of the user.
+                  createdOn:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the user was created.
+                  updatedOn:
+                    type: string
+                    format: date-time
+                    description: Timestamp when the
+        '400':
+          description: Invalid input
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '500':
+          description: Internal server error
+  /users/login:
+    post:
+      summary: Login and get JWT token
+      description: Authenticate user with email or username and receive a JWT token for protected endpoints.
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - identifier
+                - password
+              properties:
+                identifier:
+                  type: string
+                  description: User email address or username.
+                  example: admin@djjs.org or admin
+                password:
+                  type: string
+                  description: User password.
+                  example: admin123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT token for authentication.
+                  userId:
+                    type: string
+                    description: User ID.
+                  type:
+                    type: string
+                    description: User type.
+        '401':
+          description: Invalid credentials
+  /branches/search:
+    get:
+      tags:
+        - Branch
+      summary: Search branches with filters
+      description: 'Search branches using various filters like city, state, infrastructure type, etc.'
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: branch_id
+          in: query
+          description: Branch ID to filter by
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: branch_name
+          in: query
+          description: Branch name
+          required: false
+          schema:
+            type: string
+        - name: state_id
+          in: query
+          description: State ID to filter by
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: district_id
+          in: query
+          description: District ID to filter by
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: country_id
+          in: query
+          description: Country ID to filter by
+          required: false
+          schema:
+            type: integer
+            format: int64
+        - name: city
+          in: query
+          description: City name
+          required: false
+          schema:
+            type: string
+        - name: established_from
+          in: query
+          description: Branch established from date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: established_to
+          in: query
+          description: Branch established to date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: created_from
+          in: query
+          description: Branch created from date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: created_to
+          in: query
+          description: Branch created to date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: updated_from
+          in: query
+          description: Branch updated from date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: updated_to
+          in: query
+          description: Branch updated to date
+          required: false
+          schema:
+            type: string
+            format: date
+        - name: infrastructure_type
+          in: query
+          description: Infrastructure type
+          required: false
+          schema:
+            type: string
+        - name: sewadar_role
+          in: query
+          description: Sewadar role
+          required: false
+          schema:
+            type: string
+        - name: sewadar_gender
+          in: query
+          description: Sewadar gender
+          required: false
+          schema:
+            type: string
+        - name: min_total_sewadars
+          in: query
+          description: Minimum total sewadars count
+          required: false
+          schema:
+            type: integer
+        - name: max_total_sewadars
+          in: query
+          description: Maximum total sewadars count
+          required: false
+          schema:
+            type: integer
+        - name: min_total_infrastructure
+          in: query
+          description: Minimum total infrastructure count
+          required: false
+          schema:
+            type: integer
+        - name: max_total_infrastructure
+          in: query
+          description: Maximum total infrastructure count
+          required: false
+          schema:
+            type: integer
+        - name: sort_by
+          in: query
+          description: Sort field
+          required: false
+          schema:
+            type: string
+            enum:
+              - branch_branch_id
+              - branch_branch_name
+              - branch_city
+              - branch_established_date
+              - branch_created_on
+              - branch_updated_on
+              - state_state_name
+              - district_district_name
+        - name: sort_dir
+          in: query
+          description: Sort direction
+          required: false
+          schema:
+            type: string
+            enum:
+              - ASC
+              - DESC
+        - name: limit
+          in: query
+          description: Number of results to return
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 50
+        - name: offset
+          in: query
+          description: Number of results to skip
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+      responses:
+        '200':
+          description: Successful branch search
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      branches:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            branch_branch_id:
+                              type: integer
+                              format: int64
+                              description: Branch ID
+                              example: 123
+                            branch_branch_name:
+                              type: string
+                              description: Branch name
+                              example: Mumbai Central Branch
+                            branch_state_id:
+                              type: integer
+                              format: int64
+                              description: State ID
+                              example: 1
+                            branch_district_id:
+                              type: integer
+                              format: int64
+                              description: District ID
+                              example: 5
+                            branch_country_id:
+                              type: integer
+                              format: int64
+                              description: Country ID
+                              example: 1
+                            branch_city:
+                              type: string
+                              description: City name
+                              example: Mumbai
+                            branch_established_date:
+                              type: string
+                              format: date
+                              description: Branch established date
+                              example: '2020-06-15'
+                            branch_created_on:
+                              type: string
+                              format: date-time
+                              description: Branch created timestamp
+                              example: '2020-06-15T10:30:00Z'
+                            branch_updated_on:
+                              type: string
+                              format: date-time
+                              description: Branch updated timestamp
+                              example: '2023-12-01T14:45:00Z'
+                            state_state_name:
+                              type: string
+                              description: State name
+                              example: Maharashtra
+                            district_district_name:
+                              type: string
+                              description: District name
+                              example: Mumbai
+                            infrastructure_infrastructure_type:
+                              type: string
+                              description: Infrastructure type
+                              example: School
+                            sewa_sewadar_name:
+                              type: string
+                              description: Sewadar name
+                              example: John Doe
+                            sewa_sewadar_role:
+                              type: string
+                              description: Sewadar role
+                              example: Teacher
+                            sewa_sewadar_gender:
+                              type: string
+                              description: Sewadar gender
+                              example: Male
+                            total_sewadar_count:
+                              type: integer
+                              format: int64
+                              description: Total number of sewadars
+                              example: 25
+                            total_infrastructure_count:
+                              type: integer
+                              format: int64
+                              description: Total number of infrastructure items
+                              example: 5
+                      total:
+                        type: integer
+                        description: Total number of branches returned
+                        example: 25
+        '400':
+          description: Bad request - invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid parameters
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Unauthorized
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Internal server error
+  /geography/countries/:
+    get:
+      summary: Get a list of countries
+      description: Retrieve a paginated list of countries.
+      tags:
+        - Geography
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          description: Search query for country name.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of results to skip.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of countries retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        iso2:
+                          type: string
+                        iso3:
+                          type: string
+                        phone_code:
+                          type: string
+                        currency:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Unauthorized - Invalid or missing token.
+  /geography/states/:
+    get:
+      summary: Get a list of states
+      description: Retrieve a paginated list of states filtered by country.
+      tags:
+        - Geography
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: country_id
+          in: query
+          description: UUID of the country to filter states.
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search query for state name.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of results to skip.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of states retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        country_id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        code:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Unauthorized - Invalid or missing token.
+  /geography/districts/:
+    get:
+      summary: Get a list of districts
+      description: Retrieve a paginated list of districts filtered by state.
+      tags:
+        - Geography
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: state_id
+          in: query
+          description: UUID of the state to filter districts.
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search query for district name.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of results to skip.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of districts retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        state_id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Unauthorized - Invalid or missing token.
+  /geography/cities/:
+    get:
+      summary: Get a list of cities
+      description: Retrieve a paginated list of cities filtered by district.
+      tags:
+        - Geography
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: district_id
+          in: query
+          description: UUID of the district to filter cities.
+          required: false
+          schema:
+            type: string
+        - name: q
+          in: query
+          description: Search query for city name.
+          required: false
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Number of results to return.
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - name: offset
+          in: query
+          description: Number of results to skip.
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of cities retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                        district_id:
+                          type: string
+                          format: uuid
+                        name:
+                          type: string
+                        pincode:
+                          type: string
+                        latitude:
+                          type: number
+                          format: float
+                        longitude:
+                          type: number
+                          format: float
+                        is_capital:
+                          type: boolean
+                        created_at:
+                          type: string
+                          format: date-time
+                        updated_at:
+                          type: string
+                          format: date-time
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        '401':
+          description: Unauthorized - Invalid or missing token.

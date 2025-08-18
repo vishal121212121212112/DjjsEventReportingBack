@@ -1,0 +1,38 @@
+openapi: 3.0.0
+info:
+  title: DjjsEventReporting API
+  version: 1.0.0
+  description: API documentation for the DjjsEventReporting application.
+
+servers:
+  - url: https://eventsreportingapidev.djjs.org/admin 
+    description: Development server
+  - url: http://localhost:8080/admin
+    description: Local development server
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /eventHistory/post:
+    $ref: "./paths/eventHistory.yaml"
+  /users:
+    $ref: "./paths/user.yaml"
+  /users/login:
+    $ref: "./paths/login.yaml"
+  /branches/search:
+    $ref: "./paths/branch.yaml"
+  /geography/countries/:
+    $ref: "./paths/geography.yaml#/geography/countries"
+  /geography/states/:
+    $ref: "./paths/geography.yaml#/geography/states"
+  /geography/districts/:
+    $ref: "./paths/geography.yaml#/geography/districts"
+  /geography/cities/:
+    $ref: "./paths/geography.yaml#/geography/cities"
+
+
+

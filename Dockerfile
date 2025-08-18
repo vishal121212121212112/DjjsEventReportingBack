@@ -1,24 +1,23 @@
-# ---- Build stage ----
-FROM golang:1.22 AS builder
+# Start from the official Golang image
+FROM golang:1.24-alpine AS builder
+
+# Set working directory
 WORKDIR /app
 
-# Cache deps
+# Copy go.mod and go.sum files
 COPY go.mod go.sum ./
 RUN go mod download
 
-# Copy source
+# Copy the source code
 COPY . .
 
-# Set GO env for static binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o server ./...
 
-# ---- Runtime stage ----
-FROM gcr.io/distroless/base-debian12
-WORKDIR /app
-COPY --from=builder /app/server /app/server
+# Build the Go application
+RUN go build -o main ./cmd/main/main.go
 
-# Change port if your app uses a different one
+# Expose port
 EXPOSE 8080
 
-# If you need env vars, use: ENV VAR=value
-ENTRYPOINT ["/app/server"]
+
+# Command to run
+CMD ["./main"]
