@@ -17,32 +17,31 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Install Go 1.24
-        uses: GoTool@1.24
-        displayName: 'Install Go 1.24 (optional)'
-        continueOnError: true
+        uses: GoTool@1.24  # Correct action for installing Go
+        # Removed unsupported 'displayName' and 'continueOnError'
 
       # Optional: Build binary locally (this can also be done with Docker multi-stage build)
-      - script: |
-          go build -o myapp ./cmd/main || true
-        displayName: 'Build binary (optional)'
+      - name: Build binary (optional)
+        run: |
+          go build -o myapp ./cmd/main || true  # Ignoring error with || true
 
-      - script: |
+      - name: Build Docker image
+        run: |
           docker build -t myapp:latest .
-        displayName: 'Build Docker image'
 
-      - script: |
+      - name: Stop & remove old container if present
+        run: |
           docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || true
           docker ps -a -q --filter "name=myapp" | grep -q . && docker rm myapp || true
-        displayName: 'Stop & remove old container if present'
 
-      - script: |
+      - name: Run new container
+        run: |
           # NOTE: Dockerfile should expose port 8050 to 8050. Adjust as necessary.
           docker run -d --name myapp \
             -p 8050:8050 \
             --env-file .env.prod \
             myapp:latest
-        displayName: 'Run new container'
 
-      - script: |
+      - name: Prune old images
+        run: |
           docker image prune -af || true
-        displayName: 'Prune old images'
