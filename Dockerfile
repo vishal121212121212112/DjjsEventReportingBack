@@ -1,32 +1,24 @@
-# Start from the official Golang image
-FROM golang:1.24-alpine AS builder
- 
+# Use the official Golang image as a base
+FROM golang:1.23-alpine
+
+# Set the working directory inside the container
 WORKDIR /app
- 
-# # Install git (for go mod) and build tools
-# RUN apk add --no-cache git
- 
-# Copy go mod files and download dependencies
+
+# Copy the Go module files
 COPY go.mod go.sum ./
+
+# Download and install dependencies
 RUN go mod download
- 
-# Copy the source code
+
+# Copy the application source code
 COPY . .
- 
-# Build the Go app
+
+# Build the Go application
 RUN go build -o main ./cmd/main/main.go
- 
-# Start a minimal runtime image
-FROM alpine:latest
- 
-# WORKDIR /app
- 
-# # Copy the built binary from builder
-# COPY --from=builder /app/djjs-event-reporting-back .
- 
-# Expose the port (change if your app uses a different port)
+
+# Expose the port your application listens on (if applicable)
 EXPOSE 8050
- 
-# Run the binary
+
+# Define the command to run your application
 CMD ["./main"]
 
