@@ -1,43 +1,30 @@
-name: Build & Deploy (no ECR)
+  - task: GoTool@0
+      inputs:
+        version: '1.24.0'
+      displayName: 'Install Go 1.24 (optional)'
+      continueOnError: true
 
-on:
-  push:
-    branches: [ master ]
+    # Optional: local binary build (Docker multi-stage me bhi ho sakta hai)
+    - script: |
+        go build -o myapp ./cmd/main || true
+      displayName: 'Build binary (optional)'
 
-jobs:
-  deploy:
-    runs-on: [self-hosted, linux]   # aapka EC2 runner
+    - script: |
+        docker build -t myapp:latest .
+      displayName: 'Build Docker image'
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    - script: |
+        docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || true
+        docker ps -a -q --filter "name=myapp" | grep -q . && docker rm myapp || true
+      displayName: 'Stop & remove old container if present'
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.24'
+    - script: |
+        # NOTE: Dockerfile me EXPOSE 8050 ho to 8050:8050 map karein.
+        docker run -d --name myapp \
+          -p 8050:8050 \
+          --env-file .env.prod \
+          myapp:latest
+      displayName: 'Run new container'
 
-      # (Optional) Binary build; multi-stage Docker me bhi ho sakta
-      - name: Build binary
-        run: go build -o myapp ./cmd/main || true
-
-      - name: Build Docker image
-        run: docker build -t myapp:latest .
-
-      - name: Stop old container if running
-        run: |
-          docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || true
-          docker ps -a -q --filter "name=myapp" | grep -q . && docker rm myapp || true
-
-      - name: Run new container
-        run: |
-          # NOTE: Aapke Dockerfile me EXPOSE 8050 dikh raha tha.
-          # Agar app 8050 sun raha hai, to ya to 8050:8050 map karein,
-          # ya 8080:8050 (agar bahar se 8080 chahiye).
-          docker run -d --name myapp \
-            -p 8050:8050 \
-            --env-file .env.prod \
-            myapp:latest
-
-      - name: Clean old images (optional)
-        run: docker image prune -af || true
+    - script: docker image prune -af || true
+      displayName: 'Prune old images'
