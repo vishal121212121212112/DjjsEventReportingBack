@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: [self-hosted Linux X64 label-1]
+    runs-on: [self-hosted, Linux, X64, label-1]
 
     steps:
       - name: Checkout code
@@ -32,14 +32,22 @@ jobs:
         run: |
           docker build -t myapp:${{ env.IMAGE_TAG }} .
 
+      - name: Create docker network if not exists
+        run: |
+          if [ -z "$(docker network ls --filter name=^djjs-net$ -q)" ]; then
+            docker network create djjs-net
+          fi
+
       - name: Stop & remove old container if present
         run: |
           docker ps -q --filter "name=myapp" | grep -q . && docker stop myapp || true
           docker ps -a -q --filter "name=myapp" | grep -q . && docker rm myapp || true
 
-      - name: Run new container on port 8082
+      - name: Run new container on port 8082 inside custom network
         run: |
-          docker run -d --name myapp \
+          docker run -d \
+            --name myapp \
+            --network djjs-net \
             -p 8082:8082 \
             --env-file .env.prod \
             myapp:${{ env.IMAGE_TAG }}
