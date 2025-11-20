@@ -10,7 +10,7 @@ on:
 
 jobs:
   build-and-deploy:
-    runs-on: [self-hosted, linux]
+    runs-on: [self-hosted Linux X64 label-1]
 
     steps:
       - name: Checkout code
